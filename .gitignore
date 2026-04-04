@@ -1,0 +1,7 @@
+.DS_Store
+**/.DS_Store
+.claude/
+*.log
+__pycache__/
+*.pyc
+map_slide_*.png
