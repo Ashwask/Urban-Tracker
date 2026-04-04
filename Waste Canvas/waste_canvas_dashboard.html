@@ -416,6 +416,24 @@ function initMap(){
       .bindPopup(`<div style="font-family:monospace;background:#161B22;color:#E6EDF3;padding:10px;border-radius:6px;min-width:200px"><div style="font-size:13px;font-weight:800;color:#00BFA5;margin-bottom:6px">📍 ${city.name}</div><div style="font-size:10px;color:#8B949E;margin-bottom:5px">${city.state} · ${city.pop}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:11px"><div><b>${city.tpd.toLocaleString("en-IN")}</b> TPD</div><div><b style="color:${pc}">${city.processing}%</b> processed</div><div><b>${city.collection}%</b> collection</div><div><b>${city.segregation}%</b> segregation</div><div><b>${city.leakage}</b> TPD leak</div><div><b>${city.mrfs}</b> MRFs</div></div><div style="margin-top:6px;font-size:10px;color:#8B949E">GFC: ${city.gfc} · ${city.sbm}</div><div style="margin-top:5px;font-size:10px;color:#4FC3F7">${(city.key_actors||[]).join(", ")}</div></div>`,{maxWidth:260});
   });
 }
+// ── Tooltip div (shared) ──────────────────────────────────
+const sankeyTip=(()=>{
+  let el=document.getElementById("sankey-tip");
+  if(!el){el=document.createElement("div");el.id="sankey-tip";
+    Object.assign(el.style,{position:"fixed",background:"#21262D",border:"1px solid #30363D",borderRadius:"8px",padding:"10px 14px",fontSize:"12px",color:"#E6EDF3",pointerEvents:"none",opacity:"0",transition:"opacity .15s",zIndex:"9999",maxWidth:"220px",boxShadow:"0 8px 24px rgba(0,0,0,.5)"});
+    document.body.appendChild(el);}
+  return el;
+})();
+
+function showTip(html,e){
+  sankeyTip.innerHTML=html;sankeyTip.style.opacity="1";
+  sankeyTip.style.left=(e.clientX+14)+"px";sankeyTip.style.top=(e.clientY-10)+"px";
+}
+function moveTip(e){
+  sankeyTip.style.left=(e.clientX+14)+"px";sankeyTip.style.top=(e.clientY-10)+"px";
+}
+function hideTip(){sankeyTip.style.opacity="0";}
+
 function renderSankey(){
   const g=currentGeo,total=g.tpd;
   const collected=Math.round(total*g.collection/100),uncollected=total-collected;
@@ -423,19 +441,162 @@ function renderSankey(){
   const processed=Math.round(total*g.processing/100),leakage=g.leakage;
   const toMRF=Math.round(segregated*.55),toInf=Math.round(segregated*.22);
   const compost=Math.round(processed*.30),recycle=Math.round(processed*.35),cbg=Math.round(processed*.12),rdf=Math.round(processed*.23);
-  const toLF=Math.max(10,total-processed-leakage);
+
+  const colorMap={
+    "MSW Generated":"#00BFA5","Collected":"#4FC3F7","Uncollected":"#FF5252",
+    "Segregated":"#69F0AE","Mixed/Unsorted":"#FFB300","MRF/Sorting":"#4FC3F7",
+    "Informal Recovery":"#CE93D8","Leakage":"#FF5252","Composting":"#69F0AE",
+    "Recycling":"#00BFA5","CBG/Biogas":"#FFAB40","RDF/WtE":"#FFB300","Landfill/Legacy":"#FF5252"
+  };
+  const nodes=[
+    {name:"MSW Generated"},{name:"Collected"},{name:"Uncollected"},
+    {name:"Segregated"},{name:"Mixed/Unsorted"},{name:"MRF/Sorting"},
+    {name:"Informal Recovery"},{name:"Leakage"},{name:"Composting"},
+    {name:"Recycling"},{name:"CBG/Biogas"},{name:"RDF/WtE"},{name:"Landfill/Legacy"}
+  ];
+  const links=[
+    {source:0,target:1,value:collected},{source:0,target:2,value:uncollected},
+    {source:1,target:3,value:segregated},{source:1,target:4,value:mixed},
+    {source:3,target:5,value:toMRF},{source:3,target:6,value:toInf},
+    {source:4,target:7,value:Math.round(leakage*.6)},
+    {source:4,target:12,value:Math.max(5,mixed-Math.round(leakage*.6))},
+    {source:5,target:8,value:compost},{source:5,target:9,value:recycle},
+    {source:5,target:10,value:cbg},{source:5,target:11,value:rdf},
+    {source:6,target:9,value:Math.round(toInf*.8)},
+    {source:6,target:12,value:Math.round(toInf*.2)},
+    {source:2,target:12,value:uncollected}
+  ].filter(l=>l.value>0);
+
   const container=document.getElementById("sankey-container");
-  container.innerHTML="";
-  const W=Math.max(container.offsetWidth||800,800),H=320;
-  const svg=d3.select("#sankey-container").append("svg").attr("width",W).attr("height",H).style("background","#161B22").style("border-radius","8px");
-  const nodes=[{name:"MSW Generated"},{name:"Collected"},{name:"Uncollected"},{name:"Segregated"},{name:"Mixed/Unsorted"},{name:"MRF/Sorting"},{name:"Informal Recovery"},{name:"Leakage"},{name:"Composting"},{name:"Recycling"},{name:"CBG/Biogas"},{name:"RDF/WtE"},{name:"Landfill/Legacy"}];
-  const links=[{source:0,target:1,value:collected},{source:0,target:2,value:uncollected},{source:1,target:3,value:segregated},{source:1,target:4,value:mixed},{source:3,target:5,value:toMRF},{source:3,target:6,value:toInf},{source:4,target:7,value:Math.round(leakage*.6)},{source:4,target:12,value:Math.max(5,mixed-Math.round(leakage*.6))},{source:5,target:8,value:compost},{source:5,target:9,value:recycle},{source:5,target:10,value:cbg},{source:5,target:11,value:rdf},{source:6,target:9,value:Math.round(toInf*.8)},{source:6,target:12,value:Math.round(toInf*.2)},{source:2,target:12,value:uncollected}].filter(l=>l.value>0);
-  const colorMap={"MSW Generated":"#00BFA5","Collected":"#4FC3F7","Uncollected":"#FF5252","Segregated":"#69F0AE","Mixed/Unsorted":"#FFB300","MRF/Sorting":"#4FC3F7","Informal Recovery":"#CE93D8","Leakage":"#FF5252","Composting":"#69F0AE","Recycling":"#00BFA5","CBG/Biogas":"#FFAB40","RDF/WtE":"#FFB300","Landfill/Legacy":"#FF5252"};
-  const sankey=d3.sankey().nodeId(d=>d.index).nodeWidth(14).nodePadding(8).extent([[18,18],[W-18,H-18]]);
-  const{nodes:sN,links:sL}=sankey({nodes:nodes.map((n,i)=>({...n,index:i})),links});
-  svg.append("g").selectAll("path").data(sL).join("path").attr("d",d3.sankeyLinkHorizontal()).attr("stroke",d=>colorMap[d.source.name]||"#4FC3F7").attr("stroke-width",d=>Math.max(1,d.width)).attr("fill","none").attr("opacity",.32).append("title").text(d=>`${d.source.name} → ${d.target.name}: ${d.value.toLocaleString("en-IN")} TPD`);
-  svg.append("g").selectAll("rect").data(sN).join("rect").attr("x",d=>d.x0).attr("y",d=>d.y0).attr("height",d=>Math.max(2,d.y1-d.y0)).attr("width",d=>d.x1-d.x0).attr("fill",d=>colorMap[d.name]||"#8B949E").attr("rx",2).append("title").text(d=>`${d.name}: ${Math.round(d.value).toLocaleString("en-IN")} TPD`);
-  svg.append("g").style("font","9px monospace").style("fill","#E6EDF3").selectAll("text").data(sN).join("text").attr("x",d=>d.x0<W/2?d.x1+4:d.x0-4).attr("y",d=>(d.y1+d.y0)/2).attr("dy","0.35em").attr("text-anchor",d=>d.x0<W/2?"start":"end").text(d=>`${d.name} (${(Math.round(d.value/100)/10).toFixed(1)}K)`);
+  const W=Math.max(container.offsetWidth||900,900),H=360;
+
+  // ── Remove old SVG with fade ──
+  d3.select("#sankey-container svg").transition().duration(200).style("opacity",0).remove();
+
+  const svg=d3.select("#sankey-container").append("svg")
+    .attr("width",W).attr("height",H)
+    .style("background","#161B22").style("border-radius","8px")
+    .style("opacity",0);
+
+  // Build sankey layout
+  const sankeyLayout=d3.sankey()
+    .nodeId(d=>d.index).nodeWidth(18).nodePadding(12)
+    .extent([[24,24],[W-24,H-24]]);
+
+  const graph=sankeyLayout({
+    nodes:nodes.map((n,i)=>({...n,index:i})),
+    links:links.map(l=>({...l}))
+  });
+
+  // ── Links ──
+  const link=svg.append("g").attr("fill","none")
+    .selectAll("path").data(graph.links).join("path")
+    .attr("d",d3.sankeyLinkHorizontal())
+    .attr("stroke",d=>colorMap[d.source.name]||"#4FC3F7")
+    .attr("stroke-width",d=>Math.max(1.5,d.width))
+    .attr("opacity",0.28)
+    .style("cursor","pointer")
+    .on("mouseover",function(event,d){
+      // Highlight this link
+      d3.select(this).transition().duration(150).attr("opacity",0.75).attr("stroke-width",d=>Math.max(3,d.width+2));
+      // Dim all other links
+      link.filter(l=>l!==d).transition().duration(150).attr("opacity",0.07);
+      showTip(
+        `<div style="font-weight:700;color:${colorMap[d.source.name]||"#4FC3F7"};margin-bottom:5px">${d.source.name} → ${d.target.name}</div>
+         <div style="font-size:15px;font-weight:800;color:#E6EDF3">${d.value.toLocaleString("en-IN")} <span style="font-size:11px;color:#8B949E">TPD</span></div>
+         <div style="font-size:10px;color:#8B949E;margin-top:3px">${((d.value/total)*100).toFixed(1)}% of total MSW</div>`,
+        event
+      );
+    })
+    .on("mousemove",moveTip)
+    .on("mouseout",function(){
+      link.transition().duration(200).attr("opacity",0.28).attr("stroke-width",d=>Math.max(1.5,d.width));
+      hideTip();
+    });
+
+  // ── Nodes ──
+  const drag=d3.drag()
+    .on("start",function(){d3.select(this).raise();})
+    .on("drag",function(event,d){
+      d.y0=Math.max(24,Math.min(H-24-(d.y1-d.y0),d.y0+event.dy));
+      d.y1=d.y0+(d.y1-d.y0 < 0 ? 0 : d.y1-d.y0);
+      // Update node position
+      d3.select(this).select("rect").attr("y",d.y0);
+      d3.select(this).select("text").attr("y",(d.y0+d.y1)/2);
+      // Recalculate link paths
+      sankeyLayout.update(graph);
+      link.attr("d",d3.sankeyLinkHorizontal());
+    });
+
+  const node=svg.append("g").selectAll("g").data(graph.nodes).join("g")
+    .style("cursor","grab")
+    .call(drag);
+
+  node.append("rect")
+    .attr("x",d=>d.x0).attr("y",d=>d.y0)
+    .attr("height",d=>Math.max(4,d.y1-d.y0))
+    .attr("width",d=>d.x1-d.x0)
+    .attr("fill",d=>colorMap[d.name]||"#8B949E")
+    .attr("rx",3)
+    .attr("opacity",0.9)
+    .on("mouseover",function(event,d){
+      // Highlight connected links
+      link.transition().duration(150)
+        .attr("opacity",l=>(l.source===d||l.target===d)?0.8:0.05)
+        .attr("stroke-width",l=>l.source===d||l.target===d ? Math.max(3,l.width+2) : Math.max(1.5,l.width));
+      d3.select(this).transition().duration(150).attr("opacity",1).attr("x",d=>d.x0-1).attr("width",d=>d.x1-d.x0+2);
+      const inflow=d.targetLinks.reduce((a,l)=>a+l.value,0);
+      const outflow=d.sourceLinks.reduce((a,l)=>a+l.value,0);
+      showTip(
+        `<div style="font-weight:800;color:${colorMap[d.name]||"#4FC3F7"};margin-bottom:6px;font-size:13px">${d.name}</div>
+         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">
+           <div style="color:#8B949E">Volume</div><div style="font-weight:700">${Math.round(d.value).toLocaleString("en-IN")} TPD</div>
+           <div style="color:#8B949E">% of MSW</div><div style="font-weight:700">${((d.value/total)*100).toFixed(1)}%</div>
+           ${inflow?`<div style="color:#8B949E">Inflow</div><div style="color:#69F0AE">${inflow.toLocaleString("en-IN")} TPD</div>`:""}
+           ${outflow?`<div style="color:#8B949E">Outflow</div><div style="color:#4FC3F7">${outflow.toLocaleString("en-IN")} TPD</div>`:""}
+         </div>`,
+        event
+      );
+    })
+    .on("mousemove",moveTip)
+    .on("mouseout",function(){
+      link.transition().duration(200).attr("opacity",0.28).attr("stroke-width",d=>Math.max(1.5,d.width));
+      d3.select(this).transition().duration(150).attr("opacity",0.9).attr("x",d=>d.x0).attr("width",d=>d.x1-d.x0);
+      hideTip();
+    });
+
+  // ── Labels ──
+  node.append("text")
+    .attr("x",d=>d.x0<W/2?d.x1+6:d.x0-6)
+    .attr("y",d=>(d.y1+d.y0)/2)
+    .attr("dy","0.35em")
+    .attr("text-anchor",d=>d.x0<W/2?"start":"end")
+    .attr("fill","#E6EDF3")
+    .attr("font-size","10px")
+    .attr("font-family","monospace")
+    .attr("pointer-events","none")
+    .text(d=>`${d.name} (${(Math.round(d.value/100)/10).toFixed(1)}K TPD)`);
+
+  // ── Legend ──
+  const legendData=[
+    {label:"Recovery stream",color:"#00BFA5"},
+    {label:"Leakage / loss",color:"#FF5252"},
+    {label:"Processing",color:"#69F0AE"},
+    {label:"Informal",color:"#CE93D8"},
+  ];
+  const lg=svg.append("g").attr("transform",`translate(${W-180},${H-60})`);
+  legendData.forEach((d,i)=>{
+    lg.append("rect").attr("x",0).attr("y",i*14).attr("width",10).attr("height",10).attr("fill",d.color).attr("rx",2);
+    lg.append("text").attr("x",14).attr("y",i*14+9).attr("fill","#8B949E").attr("font-size","9px").text(d.label);
+  });
+
+  // ── Hint ──
+  svg.append("text").attr("x",W/2).attr("y",H-8)
+    .attr("text-anchor","middle").attr("fill","#30363D").attr("font-size","9px")
+    .text("Hover links/nodes for details · Drag nodes to rearrange");
+
+  // ── Fade in ──
+  svg.transition().duration(500).style("opacity",1);
 }
 function renderFlow(){
   const nodes=[{i:"🏘️",l:"Consumers",s:"1,62,000 TPD",st:"ok"},{i:"🚛",l:"Formal Collectors",s:"ULBs / SWM",st:"ok",br:{i:"♻️",l:"Informal Collectors",s:"~20L workers",st:"informal"}},{i:"🏭",l:"MRFs / Sorting",s:"2,900 MRFs",st:"warning"},{i:"🛒",l:"Scrap Dealers",s:"Unorganised",st:"warning"},{i:"📦",l:"Aggregators",s:"Capital gap ⚠",st:"critical",lk:"12,600 TPD leakage"},{i:"🔄",l:"Recyclers",s:"Banyan, Attero…",st:"ok"},{i:"⚙️",l:"Processors",s:"CBG/WtE/RDF",st:"warning"},{i:"🗑️",l:"Landfill/Legacy",s:"62,631 sites ⚠",st:"critical"}];
