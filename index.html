@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urban Tracker</title>
+<style>
+:root{--bg:#0D1117;--bg2:#161B22;--bg3:#1C2230;--border:#30363D;--teal:#00BFA5;--amber:#FFB300;--blue:#4FC3F7;--text:#E6EDF3;--muted:#8B949E}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px}
+.header{text-align:center;margin-bottom:48px}
+.header h1{font-size:28px;font-weight:700;letter-spacing:-0.5px}
+.header h1 span{color:var(--teal)}
+.header p{color:var(--muted);font-size:14px;margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:960px;width:100%}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--teal);transform:translateY(-2px)}
+.card-icon{font-size:28px;margin-bottom:14px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.card-tag{display:inline-block;margin-top:14px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);padding:3px 10px;border-radius:20px}
+.card.amber:hover{border-color:var(--amber)}
+.card.amber .card-tag{color:var(--amber);border-color:var(--amber)}
+.card.blue:hover{border-color:var(--blue)}
+.card.blue .card-tag{color:var(--blue);border-color:var(--blue)}
+.footer{margin-top:48px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Urban <span>Tracker</span></h1>
+  <p>India urban systems — data, maps, and analysis</p>
+</div>
+
+<div class="grid">
+  <a class="card" href="Waste Canvas/waste_canvas_dashboard.html">
+    <div class="card-icon">♻️</div>
+    <div class="card-title">Waste Canvas</div>
+    <div class="card-desc">India urban waste system — flows, actors, unit economics, gaps, and ecosystem map.</div>
+    <span class="card-tag">Dashboard</span>
+  </a>
+
+  <a class="card amber" href="Partner Map/dashboard.html">
+    <div class="card-icon">🤝</div>
+    <div class="card-title">Partner Map</div>
+    <div class="card-desc">Urban sector partner and stakeholder landscape across cities and domains.</div>
+    <span class="card-tag">Dashboard</span>
+  </a>
+
+  <a class="card blue" href="rainmatter-india-map.html">
+    <div class="card-icon">🗺️</div>
+    <div class="card-title">India Map</div>
+    <div class="card-desc">Rainmatter India geographic overview and opportunity landscape.</div>
+    <span class="card-tag">Map</span>
+  </a>
+</div>
+
+<div class="footer">Urban Tracker · Rainmatter Foundation</div>
+</body>
+</html>
