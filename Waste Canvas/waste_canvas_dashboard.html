@@ -138,6 +138,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .data-table tr:hover td{background:var(--bg3)}
 .fade-in{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
 .fade-in.visible{opacity:1;transform:none}
+.subtab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.subtab-btn{background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.subtab-btn:hover{border-color:var(--teal);color:var(--teal)}
+.subtab-btn.active{background:var(--teal);border-color:var(--teal);color:#000}
 </style>
 </head>
 <body>
@@ -145,17 +149,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 <nav id="topnav">
   <span class="brand">⟳ Waste Canvas</span>
   <a href="#overview">Overview</a>
-  <a href="#kpis">KPIs</a>
-  <a href="#geomap">Map</a>
-  <a href="#systems">Systems</a>
-  <a href="#uniteco">Unit Economics</a>
-  <a href="#gaps">Gaps</a>
-  <a href="#charts">Charts</a>
-  <a href="#compare">Exists/Missing</a>
-  <a href="#actions">Actions</a>
-  <a href="#partners">Partners</a>
-  <a href="#funders">Funders</a>
-  <a href="#focus">Focus</a>
+  <a href="#map-charts">Map & Charts</a>
+  <a href="#system-flows">System Flows</a>
+  <a href="#economics-gaps">Economics & Gaps</a>
+  <a href="#ecosystem">Ecosystem</a>
   <a href="#sources">Sources</a>
 </nav>
 
@@ -172,6 +169,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
   <span style="margin-left:auto;font-size:10px;color:var(--muted)">CPCB FY21-22 · GFC 2024-25 · PIB 2026 · World Bank · MoHUA · OpenStreetMap</span>
 </div>
 
+<!-- Section 1: Overview (merged overview + kpis) -->
 <section id="overview">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
     <div>
@@ -185,21 +183,21 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
       <div id="date-display" style="font-size:11px;color:var(--muted);margin-top:3px"></div>
     </div>
   </div>
-</section>
-
-<section id="kpis" class="section fade-in">
-  <div class="section-title">Key Performance Indicators</div>
-  <div class="geo-ctx" id="geo-ctx" style="display:none">
-    <span style="font-size:12px;color:var(--teal);font-weight:700" id="ctx-label">📍</span>
-    <div class="gcs"><div class="gcs-v" id="ctx-pop">—</div><div class="gcs-l">Urban Pop</div></div>
-    <div class="gcs"><div class="gcs-v" id="ctx-ulb">—</div><div class="gcs-l">ULBs</div></div>
-    <div class="gcs"><div class="gcs-v" id="ctx-gfc">—</div><div class="gcs-l">GFC Stars</div></div>
-    <div class="gcs"><div class="gcs-v" id="ctx-sbm">—</div><div class="gcs-l">SBM Status</div></div>
+  <div style="margin-top:24px">
+    <div class="section-title">Key Performance Indicators</div>
+    <div class="geo-ctx" id="geo-ctx" style="display:none">
+      <span style="font-size:12px;color:var(--teal);font-weight:700" id="ctx-label">📍</span>
+      <div class="gcs"><div class="gcs-v" id="ctx-pop">—</div><div class="gcs-l">Urban Pop</div></div>
+      <div class="gcs"><div class="gcs-v" id="ctx-ulb">—</div><div class="gcs-l">ULBs</div></div>
+      <div class="gcs"><div class="gcs-v" id="ctx-gfc">—</div><div class="gcs-l">GFC Stars</div></div>
+      <div class="gcs"><div class="gcs-v" id="ctx-sbm">—</div><div class="gcs-l">SBM Status</div></div>
+    </div>
+    <div class="kpi-grid" id="kpi-grid"></div>
   </div>
-  <div class="kpi-grid" id="kpi-grid"></div>
 </section>
 
-<section id="geomap" class="section fade-in">
+<!-- Section 2: Map & Charts (merged geomap + charts) -->
+<section id="map-charts" class="section fade-in">
   <div class="section-title">Pan-India Waste Infrastructure Map <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">· OpenStreetMap · CC BY-SA</span></div>
   <div id="map"></div>
   <div class="map-legend">
@@ -207,84 +205,108 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     <div class="legend-item"><div class="legend-dot" style="background:#FFB300"></div>Medium city (1.5K–5K TPD)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#69F0AE"></div>Smaller city (&lt;1.5K TPD)</div>
   </div>
-</section>
-
-<section id="systems" class="section fade-in">
-  <div class="section-title">Systems Flow Map — Material & Value Flows (D3 Sankey)</div>
-  <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Width = volume (TPD). Select a city above to see city-level material flows. Red nodes = critical bottlenecks.</p>
-  <div id="sankey-container"></div>
-  <div style="margin-top:22px">
-    <div class="section-title" style="font-size:11px">9-Block Flow with Status</div>
-    <div class="flow-wrap"><div class="flow" id="flow-diagram"></div></div>
-  </div>
-</section>
-
-<section id="uniteco" class="section fade-in">
-  <div class="section-title">Unit Economics by Geography</div>
-  <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Cost and revenue per tonne across the waste value chain. Switch geography above for city-level estimates.</p>
-  <div class="ue-grid" id="ue-grid"></div>
-  <div style="margin-top:20px">
-    <div class="section-title" style="font-size:11px">Full Value Chain Economics</div>
-    <div style="overflow-x:auto">
-      <table class="data-table">
-        <thead><tr><th>Block</th><th>Cost (₹/tonne)</th><th>Revenue (₹/tonne)</th><th>Net</th><th>Recovery %</th></tr></thead>
-        <tbody id="ue-tbody"></tbody>
-      </table>
+  <div style="margin-top:28px">
+    <div class="section-title">Data Visualisations</div>
+    <div class="charts-grid">
+      <div class="chart-card"><div class="chart-title">Waste Stream Disposition</div><div class="chart-canvas-wrap"><canvas id="chart-disposition"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Ward Coverage</div><div class="chart-canvas-wrap"><canvas id="chart-wards"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">City MSW Generation (TPD)</div><div class="chart-canvas-wrap"><canvas id="chart-cities"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Capital Mix in Waste Sector</div><div class="chart-canvas-wrap"><canvas id="chart-capital"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Bottleneck Severity Index</div><div class="chart-canvas-wrap"><canvas id="chart-bottleneck"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Processing Technology Mix</div><div class="chart-canvas-wrap"><canvas id="chart-tech"></canvas></div></div>
     </div>
   </div>
 </section>
 
-<section id="gaps" class="section fade-in">
-  <div class="section-title">Structural Gaps & Binding Bottlenecks</div>
-  <div class="gap-grid" id="gap-grid"></div>
-</section>
-
-<section id="charts" class="section fade-in">
-  <div class="section-title">Data Visualisations</div>
-  <div class="charts-grid">
-    <div class="chart-card"><div class="chart-title">Waste Stream Disposition</div><div class="chart-canvas-wrap"><canvas id="chart-disposition"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">Ward Coverage</div><div class="chart-canvas-wrap"><canvas id="chart-wards"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">City MSW Generation (TPD)</div><div class="chart-canvas-wrap"><canvas id="chart-cities"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">Capital Mix in Waste Sector</div><div class="chart-canvas-wrap"><canvas id="chart-capital"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">Bottleneck Severity Index</div><div class="chart-canvas-wrap"><canvas id="chart-bottleneck"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">Processing Technology Mix</div><div class="chart-canvas-wrap"><canvas id="chart-tech"></canvas></div></div>
+<!-- Section 3: System Flows (merged systems + circularity-model + baseline) -->
+<section id="system-flows" class="section fade-in">
+  <div class="section-title">System Flows & Circularity</div>
+  <div class="subtab-bar">
+    <button class="subtab-btn active" onclick="switchSubtab('system-flows','sankey')">Sankey Diagram</button>
+    <button class="subtab-btn" onclick="switchSubtab('system-flows','flow')">Flow Diagram</button>
+    <button class="subtab-btn" onclick="switchSubtab('system-flows','circularity')">Circularity Model</button>
+    <button class="subtab-btn" onclick="switchSubtab('system-flows','baseline-ref')">Baseline Reference</button>
+  </div>
+  <div class="subtab-panel active" data-stab="sankey">
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Width = volume (TPD). Select a city above to see city-level material flows.</p>
+    <div id="sankey-container"></div>
+  </div>
+  <div class="subtab-panel" data-stab="flow" style="display:none">
+    <div class="flow-wrap"><div class="flow" id="flow-diagram"></div></div>
+  </div>
+  <div class="subtab-panel" data-stab="circularity" style="display:none">
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Interactive stock-and-flow model. Efficiency parameters update with geography selection.</p>
+    <div id="circularity-container"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:14px" id="efficiency-params"></div>
+  </div>
+  <div class="subtab-panel" data-stab="baseline-ref" style="display:none">
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px">System dynamics reference model — circularity oriented systems structure.</p>
+    <div id="baseline-circularity-svg"></div>
   </div>
 </section>
 
-<section id="compare" class="section fade-in">
-  <div class="section-title">What Exists vs What is Missing</div>
-  <div class="compare-grid">
-    <div class="compare-col exists"><div class="compare-head" style="color:var(--green)">✓ What Exists</div><div id="exists-list"></div></div>
-    <div class="compare-col missing"><div class="compare-head" style="color:var(--coral)">✗ What is Missing</div><div id="missing-list"></div></div>
+<!-- Section 4: Economics & Gaps (merged uniteco + gaps + compare) -->
+<section id="economics-gaps" class="section fade-in">
+  <div class="section-title">Economics, Gaps & Analysis</div>
+  <div class="subtab-bar">
+    <button class="subtab-btn active" onclick="switchSubtab('economics-gaps','uniteco')">Unit Economics</button>
+    <button class="subtab-btn" onclick="switchSubtab('economics-gaps','bottlenecks')">Bottlenecks</button>
+    <button class="subtab-btn" onclick="switchSubtab('economics-gaps','compare')">Exists vs Missing</button>
+  </div>
+  <div class="subtab-panel active" data-stab="uniteco">
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Cost and revenue per tonne across the waste value chain. Switch geography above for city-level estimates.</p>
+    <div class="ue-grid" id="ue-grid"></div>
+    <div style="margin-top:20px">
+      <div class="section-title" style="font-size:11px">Full Value Chain Economics</div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Block</th><th>Cost (₹/tonne)</th><th>Revenue (₹/tonne)</th><th>Net</th><th>Recovery %</th></tr></thead>
+          <tbody id="ue-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="subtab-panel" data-stab="bottlenecks" style="display:none">
+    <div class="gap-grid" id="gap-grid"></div>
+  </div>
+  <div class="subtab-panel" data-stab="compare" style="display:none">
+    <div class="compare-grid">
+      <div class="compare-col exists"><div class="compare-head" style="color:var(--green)">✓ What Exists</div><div id="exists-list"></div></div>
+      <div class="compare-col missing"><div class="compare-head" style="color:var(--coral)">✗ What is Missing</div><div id="missing-list"></div></div>
+    </div>
   </div>
 </section>
 
-<section id="actions" class="section fade-in">
-  <div class="section-title">What Needs to Change — 8 Priority Actions</div>
-  <div class="action-grid" id="action-grid"></div>
-</section>
-
-<section id="partners" class="section fade-in">
-  <div class="section-title">Pan-India Partner Ecosystem</div>
-  <div class="filter-row" id="partner-filters"></div>
-  <div style="overflow-x:auto">
-    <table class="partners-table">
-      <thead><tr><th>Organisation</th><th>Block</th><th>Type</th><th>Geography</th><th>Focus</th></tr></thead>
-      <tbody id="partners-tbody"></tbody>
-    </table>
+<!-- Section 5: Ecosystem (merged partners + funders + actions + focus) -->
+<section id="ecosystem" class="section fade-in">
+  <div class="section-title">Ecosystem & Stakeholders</div>
+  <div class="subtab-bar">
+    <button class="subtab-btn active" onclick="switchSubtab('ecosystem','partners')">Partners</button>
+    <button class="subtab-btn" onclick="switchSubtab('ecosystem','funders')">Funders</button>
+    <button class="subtab-btn" onclick="switchSubtab('ecosystem','actions')">Priority Actions</button>
+    <button class="subtab-btn" onclick="switchSubtab('ecosystem','focus')">Focus Areas</button>
+  </div>
+  <div class="subtab-panel active" data-stab="partners">
+    <div class="filter-row" id="partner-filters"></div>
+    <div style="overflow-x:auto">
+      <table class="partners-table">
+        <thead><tr><th>Organisation</th><th>Block</th><th>Type</th><th>Geography</th><th>Focus</th></tr></thead>
+        <tbody id="partners-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="subtab-panel" data-stab="funders" style="display:none">
+    <div class="funders-section" id="funders-section"></div>
+  </div>
+  <div class="subtab-panel" data-stab="actions" style="display:none">
+    <div class="action-grid" id="action-grid"></div>
+  </div>
+  <div class="subtab-panel" data-stab="focus" style="display:none">
+    <div class="focus-grid" id="focus-grid"></div>
   </div>
 </section>
 
-<section id="funders" class="section fade-in">
-  <div class="section-title">Funders, Philanthropy, CSR & Investors</div>
-  <div class="funders-section" id="funders-section"></div>
-</section>
-
-<section id="focus" class="section fade-in">
-  <div class="section-title">Strategic Focus Areas</div>
-  <div class="focus-grid" id="focus-grid"></div>
-</section>
-
+<!-- Section 6: Sources (kept as-is) -->
 <section id="sources" class="section fade-in">
   <div class="section-title">Data Sources & Citations</div>
   <p style="font-size:12px;color:var(--muted);margin-bottom:14px">All data is derived from publicly available government reports, international development publications, and open-access research. Licensed under <strong style="color:var(--teal)">CC BY-SA 4.0</strong>. Base map: OpenStreetMap contributors (ODbL).</p>
@@ -311,7 +333,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 // ═══════════════════════════════════════════════════════════════
 const NATIONAL={level:"national",name:"India (National)",tpd:165000,collection:93,segregation:66,processing:47,leakage:13000,mrfs:2900,legacy_mt:8000,legacy_pct:15,legacy_sites:3159,pop:"47.2 Cr (urban)",ulbs:4800,gfc:"3-Star avg",sbm:"SBM-U 2.0 Active"};
 const STATES={maharashtra:{name:"Maharashtra",tpd:28000,collection:96,segregation:72,processing:62,leakage:1680,mrfs:380,ulbs:384,pop:"5.5 Cr",gfc:"5-Star (Pune,Nagpur)",sbm:"ODF++"},delhi:{name:"Delhi (NCT)",tpd:11000,collection:97,segregation:60,processing:55,leakage:660,mrfs:90,ulbs:3,pop:"1.9 Cr",gfc:"4-Star",sbm:"ODF+"},karnataka:{name:"Karnataka",tpd:14500,collection:90,segregation:70,processing:56,leakage:870,mrfs:215,ulbs:213,pop:"2.9 Cr",gfc:"5-Star (Mysuru)",sbm:"ODF++"},tamil_nadu:{name:"Tamil Nadu",tpd:18200,collection:89,segregation:63,processing:51,leakage:1092,mrfs:260,ulbs:663,pop:"3.5 Cr",gfc:"4-Star avg",sbm:"ODF+"},west_bengal:{name:"West Bengal",tpd:13800,collection:82,segregation:51,processing:41,leakage:1104,mrfs:140,ulbs:127,pop:"2.9 Cr",gfc:"3-Star avg",sbm:"ODF"},gujarat:{name:"Gujarat",tpd:12400,collection:94,segregation:75,processing:65,leakage:744,mrfs:190,ulbs:170,pop:"2.6 Cr",gfc:"5-Star (Surat)",sbm:"ODF++"},uttar_pradesh:{name:"Uttar Pradesh",tpd:21000,collection:74,segregation:48,processing:36,leakage:1680,mrfs:180,ulbs:638,pop:"4.4 Cr",gfc:"2-Star avg",sbm:"ODF"},telangana:{name:"Telangana",tpd:7800,collection:91,segregation:65,processing:53,leakage:468,mrfs:120,ulbs:141,pop:"1.5 Cr",gfc:"4-Star (Hyderabad)",sbm:"ODF+"},rajasthan:{name:"Rajasthan",tpd:8900,collection:80,segregation:52,processing:42,leakage:712,mrfs:110,ulbs:191,pop:"1.7 Cr",gfc:"3-Star avg",sbm:"ODF"},kerala:{name:"Kerala",tpd:6200,collection:88,segregation:78,processing:60,leakage:372,mrfs:140,ulbs:93,pop:"1.2 Cr",gfc:"4-Star avg",sbm:"ODF+"}};
-const CITIES={delhi:{name:"Delhi",state:"Delhi",tpd:11000,collection:97,segregation:60,processing:60,leakage:660,mrfs:90,lat:28.65,lng:77.23,pop:"1.9 Cr",ulbs:3,gfc:"4-Star",sbm:"ODF+",key_actors:["NDMC","SDMC","EDMC","IL&FS","Ramky","Ecogreen (WtE)"],rank2023:7},mumbai:{name:"Mumbai",state:"Maharashtra",tpd:7200,collection:97,segregation:65,processing:55,leakage:432,mrfs:52,lat:19.07,lng:72.88,pop:"1.25 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["BMC/MCGM","Antony Waste","KNS Infrastructure"],rank2023:null},bengaluru:{name:"Bengaluru",state:"Karnataka",tpd:5200,collection:90,segregation:72,processing:65,leakage:312,mrfs:68,lat:12.97,lng:77.59,pop:"0.95 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["BBMP","Hasiru Dala","Saahas Zero Waste","GPS Renewables","Hasirudala Innovations"],rank2023:null},chennai:{name:"Chennai",state:"Tamil Nadu",tpd:4800,collection:92,segregation:65,processing:50,leakage:288,mrfs:48,lat:13.08,lng:80.27,pop:"0.8 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["GCC","Ramky Enviro","Antony Lara","Exnora International"],rank2023:null},kolkata:{name:"Kolkata",state:"West Bengal",tpd:4800,collection:88,segregation:50,processing:40,leakage:384,mrfs:35,lat:22.57,lng:88.36,pop:"0.8 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF",key_actors:["KMC","Chintan","Ramky","Safai Saathi"],rank2023:null},hyderabad:{name:"Hyderabad",state:"Telangana",tpd:4800,collection:91,segregation:67,processing:55,leakage:288,mrfs:42,lat:17.39,lng:78.49,pop:".75 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["GHMC","TSSWMA","Mailhem","IGRPL","Ramky Enviro"],rank2023:null},ahmedabad:{name:"Ahmedabad",state:"Gujarat",tpd:3800,collection:95,segregation:78,processing:70,leakage:190,mrfs:42,lat:23.02,lng:72.57,pop:"0.6 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["AMC","AUDA","Nepra Resource Mgmt","GPS Renewables"],rank2023:null},pune:{name:"Pune",state:"Maharashtra",tpd:2400,collection:96,segregation:82,processing:75,leakage:96,mrfs:38,lat:18.52,lng:73.86,pop:"0.42 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["PMC","SWaCH","KKPKP","Saahas Zero Waste","GPS Renewables"],rank2023:null},surat:{name:"Surat",state:"Gujarat",tpd:2100,collection:98,segregation:82,processing:80,leakage:63,mrfs:28,lat:21.19,lng:72.83,pop:"0.35 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["SMC","Mailhem","IGRPL"],rank2023:2},indore:{name:"Indore",state:"M.P.",tpd:1200,collection:99,segregation:98,processing:88,leakage:24,mrfs:18,lat:22.71,lng:75.85,pop:"0.22 Cr",ulbs:1,gfc:"7-Star",sbm:"ODF++",key_actors:["IMC","Zigma Global","GPS Renewables"],rank2023:1},jaipur:{name:"Jaipur",state:"Rajasthan",tpd:1900,collection:85,segregation:55,processing:45,leakage:152,mrfs:22,lat:26.91,lng:75.79,pop:"0.32 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF",key_actors:["JMC","Ramky Enviro"],rank2023:null},nagpur:{name:"Nagpur",state:"Maharashtra",tpd:1200,collection:96,segregation:80,processing:70,leakage:48,mrfs:20,lat:21.14,lng:79.08,pop:"0.25 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["NMC","Antony Waste","Saahas Zero Waste"],rank2023:null},mysuru:{name:"Mysuru",state:"Karnataka",tpd:520,collection:96,segregation:86,processing:75,leakage:20,mrfs:12,lat:12.30,lng:76.64,pop:"0.1 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["MCC","Saahas Zero Waste"],rank2023:null},navi_mumbai:{name:"Navi Mumbai",state:"Maharashtra",tpd:800,collection:99,segregation:88,processing:82,leakage:16,mrfs:14,lat:19.03,lng:73.02,pop:"0.12 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["NMMC"],rank2023:3},coimbatore:{name:"Coimbatore",state:"Tamil Nadu",tpd:900,collection:88,segregation:60,processing:55,leakage:54,mrfs:14,lat:11.00,lng:76.97,pop:"0.17 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF+",key_actors:["CoC","Ramky"],rank2023:null},visakhapatnam:{name:"Visakhapatnam",state:"Andhra Pradesh",tpd:850,collection:88,segregation:62,processing:52,leakage:51,mrfs:12,lat:17.69,lng:83.22,pop:"0.17 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF+",key_actors:["GVMC","Ramky Enviro"],rank2023:4},bhopal:{name:"Bhopal",state:"M.P.",tpd:820,collection:90,segregation:68,processing:60,leakage:41,mrfs:14,lat:23.25,lng:77.40,pop:"0.18 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF+",key_actors:["BMC","GPS Renewables"],rank2023:5},kochi:{name:"Kochi",state:"Kerala",tpd:600,collection:88,segregation:75,processing:62,leakage:36,mrfs:15,lat:9.93,lng:76.26,pop:"0.11 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["KMC","Blue Planet Enviro","SWM Kerala"],rank2023:null},lucknow:{name:"Lucknow",state:"U.P.",tpd:1700,collection:82,segregation:48,processing:40,leakage:170,mrfs:18,lat:26.85,lng:80.95,pop:"0.30 Cr",ulbs:1,gfc:"2-Star",sbm:"ODF",key_actors:["LMC","Ramky","A2Z"],rank2023:null},chandigarh:{name:"Chandigarh",state:"Punjab/Haryana",tpd:480,collection:97,segregation:85,processing:78,leakage:19,mrfs:10,lat:30.73,lng:76.78,pop:"0.12 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["MC Chandigarh"],rank2023:null}}; 
+const CITIES={delhi:{name:"Delhi",state:"Delhi",tpd:11000,collection:97,segregation:60,processing:60,leakage:660,mrfs:90,lat:28.65,lng:77.23,pop:"1.9 Cr",ulbs:3,gfc:"4-Star",sbm:"ODF+",key_actors:["NDMC","SDMC","EDMC","IL&FS","Ramky","Ecogreen (WtE)"],rank2023:7},mumbai:{name:"Mumbai",state:"Maharashtra",tpd:7200,collection:97,segregation:65,processing:55,leakage:432,mrfs:52,lat:19.07,lng:72.88,pop:"1.25 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["BMC/MCGM","Antony Waste","KNS Infrastructure"],rank2023:null},bengaluru:{name:"Bengaluru",state:"Karnataka",tpd:5200,collection:90,segregation:72,processing:65,leakage:312,mrfs:68,lat:12.97,lng:77.59,pop:"0.95 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["BBMP","Hasiru Dala","Saahas Zero Waste","GPS Renewables","Hasirudala Innovations"],rank2023:null},chennai:{name:"Chennai",state:"Tamil Nadu",tpd:4800,collection:92,segregation:65,processing:50,leakage:288,mrfs:48,lat:13.08,lng:80.27,pop:"0.8 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["GCC","Ramky Enviro","Antony Lara","Exnora International"],rank2023:null},kolkata:{name:"Kolkata",state:"West Bengal",tpd:4800,collection:88,segregation:50,processing:40,leakage:384,mrfs:35,lat:22.57,lng:88.36,pop:"0.8 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF",key_actors:["KMC","Chintan","Ramky","Safai Saathi"],rank2023:null},hyderabad:{name:"Hyderabad",state:"Telangana",tpd:4800,collection:91,segregation:67,processing:55,leakage:288,mrfs:42,lat:17.39,lng:78.49,pop:".75 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["GHMC","TSSWMA","Mailhem","IGRPL","Ramky Enviro"],rank2023:null},ahmedabad:{name:"Ahmedabad",state:"Gujarat",tpd:3800,collection:95,segregation:78,processing:70,leakage:190,mrfs:42,lat:23.02,lng:72.57,pop:"0.6 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["AMC","AUDA","Nepra Resource Mgmt","GPS Renewables"],rank2023:null},pune:{name:"Pune",state:"Maharashtra",tpd:2400,collection:96,segregation:82,processing:75,leakage:96,mrfs:38,lat:18.52,lng:73.86,pop:"0.42 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["PMC","SWaCH","KKPKP","Saahas Zero Waste","GPS Renewables"],rank2023:null},surat:{name:"Surat",state:"Gujarat",tpd:2100,collection:98,segregation:82,processing:80,leakage:63,mrfs:28,lat:21.19,lng:72.83,pop:"0.35 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["SMC","Mailhem","IGRPL"],rank2023:2},indore:{name:"Indore",state:"M.P.",tpd:1200,collection:99,segregation:98,processing:88,leakage:24,mrfs:18,lat:22.71,lng:75.85,pop:"0.22 Cr",ulbs:1,gfc:"7-Star",sbm:"ODF++",key_actors:["IMC","Zigma Global","GPS Renewables"],rank2023:1},jaipur:{name:"Jaipur",state:"Rajasthan",tpd:1900,collection:85,segregation:55,processing:45,leakage:152,mrfs:22,lat:26.91,lng:75.79,pop:"0.32 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF",key_actors:["JMC","Ramky Enviro"],rank2023:null},nagpur:{name:"Nagpur",state:"Maharashtra",tpd:1200,collection:96,segregation:80,processing:70,leakage:48,mrfs:20,lat:21.14,lng:79.08,pop:"0.25 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["NMC","Antony Waste","Saahas Zero Waste"],rank2023:null},mysuru:{name:"Mysuru",state:"Karnataka",tpd:520,collection:96,segregation:86,processing:75,leakage:20,mrfs:12,lat:12.30,lng:76.64,pop:"0.1 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["MCC","Saahas Zero Waste"],rank2023:null},navi_mumbai:{name:"Navi Mumbai",state:"Maharashtra",tpd:800,collection:99,segregation:88,processing:82,leakage:16,mrfs:14,lat:19.03,lng:73.02,pop:"0.12 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["NMMC"],rank2023:3},coimbatore:{name:"Coimbatore",state:"Tamil Nadu",tpd:900,collection:88,segregation:60,processing:55,leakage:54,mrfs:14,lat:11.00,lng:76.97,pop:"0.17 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF+",key_actors:["CoC","Ramky"],rank2023:null},visakhapatnam:{name:"Visakhapatnam",state:"Andhra Pradesh",tpd:850,collection:88,segregation:62,processing:52,leakage:51,mrfs:12,lat:17.69,lng:83.22,pop:"0.17 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF+",key_actors:["GVMC","Ramky Enviro"],rank2023:4},bhopal:{name:"Bhopal",state:"M.P.",tpd:820,collection:90,segregation:68,processing:60,leakage:41,mrfs:14,lat:23.25,lng:77.40,pop:"0.18 Cr",ulbs:1,gfc:"3-Star",sbm:"ODF+",key_actors:["BMC","GPS Renewables"],rank2023:5},kochi:{name:"Kochi",state:"Kerala",tpd:600,collection:88,segregation:75,processing:62,leakage:36,mrfs:15,lat:9.93,lng:76.26,pop:"0.11 Cr",ulbs:1,gfc:"4-Star",sbm:"ODF+",key_actors:["KMC","Blue Planet Enviro","SWM Kerala"],rank2023:null},lucknow:{name:"Lucknow",state:"U.P.",tpd:1700,collection:82,segregation:48,processing:40,leakage:170,mrfs:18,lat:26.85,lng:80.95,pop:"0.30 Cr",ulbs:1,gfc:"2-Star",sbm:"ODF",key_actors:["LMC","Ramky","A2Z"],rank2023:null},chandigarh:{name:"Chandigarh",state:"Punjab/Haryana",tpd:480,collection:97,segregation:85,processing:78,leakage:19,mrfs:10,lat:30.73,lng:76.78,pop:"0.12 Cr",ulbs:1,gfc:"5-Star",sbm:"ODF++",key_actors:["MC Chandigarh"],rank2023:null}};
 const UE_TABLE=[{block:"Primary Collection",cost:"₹1,200–2,500",revenue:"₹0",net:"-₹1,200–2,500",recovery:"0%"},{block:"MRF / Sorting",cost:"₹600–1,200",revenue:"₹1,500–3,500",net:"+₹300–2,300",recovery:"40–65%"},{block:"Composting",cost:"₹1,200–2,000",revenue:"₹800–1,800",net:"±₹600",recovery:"35–55%"},{block:"CBG / Biomethanation",cost:"₹2,500–3,800",revenue:"₹3,500–5,500",net:"+₹1,000–1,700",recovery:"60–75%"},{block:"Plastic Recycling",cost:"₹800–1,500",revenue:"₹4,000–12,000",net:"+₹3,200–10,500",recovery:"70–90%"},{block:"Metal Recycling",cost:"₹500–900",revenue:"₹8,000–18,000",net:"+₹7,500–17,100",recovery:"85–95%"},{block:"RDF / Co-processing",cost:"₹400–700",revenue:"₹600–1,400",net:"+₹200–700",recovery:"25–45%"},{block:"Waste-to-Energy",cost:"₹3,000–5,000",revenue:"₹3,500–5,500",net:"±₹500",recovery:"20–30%"},{block:"Aggregation",cost:"₹200–500",revenue:"₹400–1,200",net:"+₹200–700",recovery:"—"},{block:"Legacy Remediation",cost:"₹800–2,500",revenue:"₹0–300",net:"-₹500–2,500",recovery:"0–10%"}];
 const GAPS_DATA=[{title:"Segregation Gap at Source",severity:"critical",metric:"20,830 wards",desc:"60,478 wards collect well but only 39,648 also segregate. Mixed waste contaminates downstream quality. Each 1% improvement unlocks ~₹180 Cr/yr in material value."},{title:"Post-Collection Leakage",severity:"critical",metric:"12,600 TPD",desc:"Estimated 12,600 TPD collected but not reaching any processing endpoint. ~₹11,500 Cr/yr in lost material value. Invisible to public reporting."},{title:"MRF Quality & Throughput",severity:"high",metric:"2,900 MRFs",desc:"2,900 MRFs nationally but most produce mixed-quality output. Only ~400 MRFs produce market-grade sorted material consistently."},{title:"Offtake Gap: Mid-Chain",severity:"high",metric:"~25% dry waste",desc:"Only 25% of MSW is recyclable dry waste; reliable offtake exists for <60% of sorted streams. Low-value streams (MLP, flex plastics) lack consistent national buyers."},{title:"Working Capital Deficit",severity:"high",metric:"~15L scrap dealers",desc:"Scrap dealers and aggregators operate on cash with no formal working capital. National gap estimated at ₹4,000–6,000 Cr, causing route abandonment and material loss."},{title:"Informal Worker Exclusion",severity:"high",metric:"15–20L workers",desc:"15–20 lakh waste pickers recover 15–20% of urban dry waste without subsidy but remain outside formal data, social protection, and EPR payment flows."},{title:"Landfill Dependence",severity:"high",metric:"46% of waste",desc:"~46% of collected waste still goes to dumpsites. 62,631 legacy sites identified; ~38% unmediated. Significant methane emission and climate liability."},{title:"Data Interoperability",severity:"medium",metric:"4,800 ULBs siloed",desc:"ULB SWM data, EPR records, MRF logs and recycler compliance exist in silos. No unified architecture for national material flow tracking or investor due diligence."}];
 const PARTNERS_DATA=[{name:"SWaCH Cooperative",block:"Informal",type:"Cooperative",geo:"Pune, MH",focus:"Waste picker formalisation, door-to-door collection",badge:"pb-informal"},{name:"Hasiru Dala",block:"Informal",type:"NGO / Social Enterprise",geo:"Bengaluru, KA",focus:"Waste picker inclusion, dry waste collection, DWCCs",badge:"pb-informal"},{name:"Chintan Environmental Research",block:"Informal",type:"NGO",geo:"Delhi, WB",focus:"Ragpicker rights, waste policy advocacy",badge:"pb-ngo"},{name:"Safai Sena",block:"Informal",type:"NGO",geo:"Delhi NCR",focus:"Waste picker collective, source segregation",badge:"pb-informal"},{name:"Plastics for Change",block:"Informal",type:"Social Enterprise",geo:"Bengaluru, Pan-India",focus:"Fair-trade plastic, picker income, brand offtake",badge:"pb-informal"},{name:"Saahas Zero Waste",block:"MRF",type:"Social Enterprise",geo:"Bengaluru, Pune, Hyderabad",focus:"Zero waste ops, MRF management, institutional waste",badge:"pb-mrf"},{name:"Hasiru Dala Innovations",block:"MRF",type:"Social Enterprise",geo:"Bengaluru, KA",focus:"DWCCs, material recovery, urban mining",badge:"pb-mrf"},{name:"Recykal",block:"Aggregators",type:"Platform / EPR Manager",geo:"Pan-India",focus:"Digital marketplace, EPR compliance, traceability",badge:"pb-agg"},{name:"GEM Enviro Management",block:"Aggregators",type:"EPR Manager",geo:"Pan-India",focus:"EPR compliance, plastic waste collection, recycling",badge:"pb-agg"},{name:"Cirqlo",block:"Aggregators",type:"Platform",geo:"Pan-India",focus:"Circular economy marketplace, recycler linkage",badge:"pb-agg"},{name:"Lucro Plastecycle",block:"Aggregators",type:"Social Enterprise",geo:"Bengaluru, Pan-India",focus:"Plastic aggregation, marginalised collector networks",badge:"pb-agg"},{name:"Karo Sambhav",block:"Aggregators",type:"EPR Manager",geo:"Pan-India",focus:"E-waste EPR, extended producer responsibility",badge:"pb-agg"},{name:"TheKabadiwala",block:"Aggregators",type:"Platform",geo:"Delhi, Gurgaon",focus:"Digital kabadi, doorstep scrap pickup",badge:"pb-agg"},{name:"Banyan Nation",block:"Recyclers",type:"Private",geo:"Hyderabad, Pan-India",focus:"Plastic recycling, brand offtake, premiumisation",badge:"pb-rec"},{name:"Attero Recycling",block:"Recyclers",type:"Private",geo:"Roorkee, Pan-India",focus:"E-waste, battery, Li-ion recycling",badge:"pb-rec"},{name:"Gravita India",block:"Recyclers",type:"Listed Company",geo:"Jaipur, Pan-India",focus:"Lead, aluminium, plastic recycling",badge:"pb-rec"},{name:"Nepra Resource Mgmt",block:"Recyclers",type:"Private",geo:"Ahmedabad, Pan-India",focus:"MRF operations, recycled material trade",badge:"pb-rec"},{name:"GPS Renewables",block:"Processors",type:"Private",geo:"Bengaluru, Pan-India",focus:"CBG, biomethanation, organic waste processing",badge:"pb-proc"},{name:"IGRPL",block:"Processors",type:"Private",geo:"Pan-India",focus:"Composting, biomethanation, RDF",badge:"pb-proc"},{name:"Mailhem Engineers",block:"Processors",type:"Private",geo:"Pune, Pan-India",focus:"WtE, MRF, composting plant design & ops",badge:"pb-proc"},{name:"Ramky Enviro Engineers",block:"Processors",type:"Private",geo:"Hyderabad, Pan-India",focus:"Integrated waste management, WtE, hazardous",badge:"pb-proc"},{name:"Antony Waste Handling",block:"Formal",type:"Listed Company",geo:"Mumbai, Pan-India",focus:"Municipal SWM contracts, collection, transport",badge:"pb-formal"},{name:"NMMC / PCMC",block:"Formal",type:"ULB",geo:"Navi Mumbai / Pimpri-Chinchwad",focus:"Model ULB waste ops, GFC 5-Star rated",badge:"pb-formal"},{name:"JTF Cities",block:"Processors",type:"Private",geo:"Pan-India",focus:"RDF, co-processing, cement kiln offtake",badge:"pb-proc"},{name:"Kabadiwalla Connect",block:"Aggregators",type:"Social Enterprise / Platform",geo:"Chennai, Pan-India",focus:"Informal recycling aggregation, itinerant buyer mapping",badge:"pb-agg"},{name:"Daily Dump",block:"MRF",type:"Social Enterprise",geo:"Bengaluru",focus:"Home composting products, decentralised waste",badge:"pb-mrf"},{name:"Waste Warriors",block:"Informal",type:"NGO",geo:"Dehradun, Himachal",focus:"Mountain/tourist area waste management",badge:"pb-ngo"},{name:"Toxics Link",block:"Informal",type:"NGO",geo:"Delhi",focus:"E-waste, hazardous waste, plastics policy",badge:"pb-ngo"},{name:"Exnora International",block:"MRF",type:"NGO",geo:"Chennai",focus:"Community composting, SWM at ward level",badge:"pb-ngo"},{name:"TERI",block:"Formal",type:"Research",geo:"Delhi, Pan-India",focus:"WtE, biogas, LCA, SWM policy research",badge:"pb-formal"},{name:"A2Z Waste Management",block:"Formal",type:"Listed Company",geo:"Gurgaon, 30+ cities",focus:"MSW collection, processing contracts",badge:"pb-formal"},{name:"Ramky Enviro Engineers",block:"Processors",type:"Private",geo:"Hyderabad, 15+ cities",focus:"Largest integrated SWM company — landfills, WtE, C&D, hazardous",badge:"pb-proc"},{name:"KKPKP",block:"Informal",type:"Union / NGO",geo:"Pune",focus:"Waste picker union, rights, SWaCH founding org",badge:"pb-informal"},{name:"Sampurn(e)arth",block:"Recyclers",type:"Social Enterprise",geo:"Pan-India",focus:"E-waste + MSW social enterprise",badge:"pb-rec"},{name:"Karo Sambhav",block:"Aggregators",type:"EPR Manager",geo:"Pan-India",focus:"E-waste EPR compliance, producer responsibility",badge:"pb-agg"},{name:"GPS Renewables",block:"Processors",type:"Private",geo:"Bengaluru, Pan-India",focus:"CBG plants, biomethanation, SATAT scheme operator",badge:"pb-proc"}];
@@ -329,6 +351,30 @@ const MISSING_DATA=["Consistent source segregation — only 39,648 of 60,478 hig
 // STATE
 // ═══════════════════════════════════════════════════════════════
 let currentGeo=NATIONAL,currentLevel="national",leafletMap=null,charts={};
+
+function switchSubtab(parentId, subtabId) {
+  const parent = document.getElementById(parentId);
+  parent.querySelectorAll('.subtab-panel').forEach(p => {
+    const isActive = p.dataset.stab === subtabId;
+    p.style.display = isActive ? 'block' : 'none';
+    p.classList.toggle('active', isActive);
+  });
+  parent.querySelectorAll('.subtab-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick').includes("'"+subtabId+"'"));
+  });
+  // Lazy render D3 panels
+  if (!switchSubtab._rendered) switchSubtab._rendered = {};
+  const key = parentId + ':' + subtabId;
+  if (!switchSubtab._rendered[key]) {
+    switchSubtab._rendered[key] = true;
+    if (parentId === 'system-flows') {
+      if (subtabId === 'sankey') renderSankey();
+      if (subtabId === 'flow') renderFlow();
+      if (subtabId === 'circularity') renderCircularityModel();
+      if (subtabId === 'baseline-ref') renderBaselineCircularity();
+    }
+  }
+}
 
 function onLevelChange(){
   const lvl=document.getElementById("sel-level").value;
@@ -353,7 +399,22 @@ function resetGeo(){
 function setGeo(data,level){
   currentGeo=data;
   document.getElementById("geo-badge").textContent=level==="national"?"🇮🇳 National View":"📍 "+data.name;
-  renderKPIs();renderGeoCtx();renderUnitEco();updateCharts();renderSankey();
+  renderKPIs();renderGeoCtx();renderUnitEco();updateCharts();
+  // Reset lazy render flags for system-flows (they need re-render on geo change)
+  if (switchSubtab._rendered) {
+    Object.keys(switchSubtab._rendered).forEach(k => {
+      if (k.startsWith('system-flows:')) switchSubtab._rendered[k] = false;
+    });
+  }
+  // Re-render active system-flows panel
+  const activePanel = document.querySelector('#system-flows .subtab-panel.active');
+  if (activePanel) {
+    const stab = activePanel.dataset.stab;
+    if (switchSubtab._rendered) switchSubtab._rendered['system-flows:' + stab] = true;
+    if (stab === 'sankey') renderSankey();
+    if (stab === 'flow') renderFlow();
+    if (stab === 'circularity') renderCircularityModel();
+  }
   if(leafletMap){
     if(level==="city"&&data.lat)leafletMap.setView([data.lat,data.lng],11);
     else if(level==="state")leafletMap.setView([20.6,78.9],6);
@@ -405,8 +466,9 @@ function renderGeoCtx(){
   document.getElementById("ctx-sbm").textContent=g.sbm||"—";
 }
 function initMap(){
-  leafletMap=L.map("map",{zoomControl:true}).setView([20.6,78.9],5);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© <a href='https://openstreetmap.org'>OpenStreetMap</a> contributors",maxZoom:18}).addTo(leafletMap);
+  const indiaBounds=L.latLngBounds([[6,68],[38,98]]);
+  leafletMap=L.map("map",{zoomControl:true,minZoom:4,maxZoom:13,maxBounds:indiaBounds,maxBoundsViscosity:1.0}).setView([20.6,78.9],5);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors © <a href="https://carto.com">CARTO</a>',subdomains:"abcd",maxZoom:13}).addTo(leafletMap);
   Object.entries(CITIES).forEach(([key,city])=>{
     const color=city.tpd>5000?"#FF5252":city.tpd>1500?"#FFB300":"#69F0AE";
     const r=Math.max(7,Math.min(26,Math.sqrt(city.tpd/35)));
@@ -435,53 +497,91 @@ function moveTip(e){
 function hideTip(){sankeyTip.style.opacity="0";}
 
 function renderSankey(){
+  try{
   const g=currentGeo,total=g.tpd;
-  const collected=Math.round(total*g.collection/100),uncollected=total-collected;
-  const segregated=Math.round(collected*g.segregation/100),mixed=collected-segregated;
-  const processed=Math.round(total*g.processing/100),leakage=g.leakage;
-  const toMRF=Math.round(segregated*.55),toInf=Math.round(segregated*.22);
-  const compost=Math.round(processed*.30),recycle=Math.round(processed*.35),cbg=Math.round(processed*.12),rdf=Math.round(processed*.23);
+  // ── Decision-maker's model: where does waste GO? ──
+  // Stage 1: Collection
+  const collected=Math.round(total*g.collection/100);
+  const uncollected=total-collected;
+  // Stage 2: Segregation (of collected)
+  const segregated=Math.round(collected*g.segregation/100);
+  const unsegregated=collected-segregated;
+  // Stage 3: What happens to segregated waste
+  const dryWaste=Math.round(segregated*0.35);  // ~35% dry fraction
+  const wetWaste=segregated-dryWaste;            // ~65% wet/organic
+  // Stage 4: Processing pathways
+  const toMRF=dryWaste;
+  const toCompost=Math.round(wetWaste*0.70);
+  const toCBG=wetWaste-toCompost;
+  // MRF outputs
+  const mrfRecovered=Math.round(toMRF*0.55);
+  const mrfRejects=toMRF-mrfRecovered;
+  // Stage 5: Informal recovery (from uncollected)
+  const informalRec=Math.round(uncollected*0.40);
+  const lostWaste=uncollected-informalRec;
+  // Stage 6: Recycling
+  const recycled=mrfRecovered+informalRec;
+  const rdf=Math.round(mrfRejects*0.40);
+  // Terminal: Landfill (unsegregated + MRF rejects after RDF + lost)
+  const toLandfill=unsegregated+mrfRejects-rdf+lostWaste;
+
+  // ── 10 clean nodes, left→right, no cycles ──
+  // 0: MSW Generated → 1: Collected / 2: Uncollected
+  // 1: Collected → 3: Segregated / 4: Unsegregated
+  // 2: Uncollected → 5: Informal Recovery / 6: Lost to Environment
+  // 3: Segregated → 7: Dry Waste / 8: Wet Waste (composting/CBG)
+  // 7: Dry → MRF → Recycled / RDF / Landfill
+  // End nodes: Recycled Material, Composting, CBG, RDF, Landfill
 
   const colorMap={
-    "MSW Generated":"#00BFA5","Collected":"#4FC3F7","Uncollected":"#FF5252",
-    "Segregated":"#69F0AE","Mixed/Unsorted":"#FFB300","MRF/Sorting":"#4FC3F7",
-    "Informal Recovery":"#CE93D8","Leakage":"#FF5252","Composting":"#69F0AE",
-    "Recycling":"#00BFA5","CBG/Biogas":"#FFAB40","RDF/WtE":"#FFB300","Landfill/Legacy":"#FF5252"
+    "MSW Generated":"#FFB300","Collected":"#4FC3F7","Uncollected":"#FF5252",
+    "Segregated":"#69F0AE","Unsegregated":"#FFB300","Informal Recovery":"#CE93D8",
+    "Lost to Environment":"#FF5252","Recycled Material":"#00BFA5",
+    "Composting":"#69F0AE","CBG / Biogas":"#FFAB40","RDF":"#FFB300","Landfill":"#FF5252"
   };
   const nodes=[
-    {name:"MSW Generated"},{name:"Collected"},{name:"Uncollected"},
-    {name:"Segregated"},{name:"Mixed/Unsorted"},{name:"MRF/Sorting"},
-    {name:"Informal Recovery"},{name:"Leakage"},{name:"Composting"},
-    {name:"Recycling"},{name:"CBG/Biogas"},{name:"RDF/WtE"},{name:"Landfill/Legacy"}
+    {name:"MSW Generated"},    // 0
+    {name:"Collected"},         // 1
+    {name:"Uncollected"},       // 2
+    {name:"Segregated"},        // 3
+    {name:"Unsegregated"},      // 4
+    {name:"Informal Recovery"}, // 5
+    {name:"Lost to Environment"},// 6
+    {name:"Recycled Material"}, // 7
+    {name:"Composting"},        // 8
+    {name:"CBG / Biogas"},      // 9
+    {name:"RDF"},               // 10
+    {name:"Landfill"}           // 11
   ];
   const links=[
-    {source:0,target:1,value:collected},{source:0,target:2,value:uncollected},
-    {source:1,target:3,value:segregated},{source:1,target:4,value:mixed},
-    {source:3,target:5,value:toMRF},{source:3,target:6,value:toInf},
-    {source:4,target:7,value:Math.round(leakage*.6)},
-    {source:4,target:12,value:Math.max(5,mixed-Math.round(leakage*.6))},
-    {source:5,target:8,value:compost},{source:5,target:9,value:recycle},
-    {source:5,target:10,value:cbg},{source:5,target:11,value:rdf},
-    {source:6,target:9,value:Math.round(toInf*.8)},
-    {source:6,target:12,value:Math.round(toInf*.2)},
-    {source:2,target:12,value:uncollected}
+    {source:0,target:1,value:collected},
+    {source:0,target:2,value:uncollected},
+    {source:1,target:3,value:segregated},
+    {source:1,target:4,value:unsegregated},
+    {source:2,target:5,value:informalRec},
+    {source:2,target:6,value:lostWaste},
+    {source:3,target:7,value:mrfRecovered},
+    {source:3,target:8,value:toCompost},
+    {source:3,target:9,value:toCBG},
+    {source:3,target:10,value:rdf},
+    {source:4,target:11,value:unsegregated},
+    {source:5,target:7,value:informalRec},
+    {source:6,target:11,value:lostWaste},
+    {source:3,target:11,value:mrfRejects-rdf}
   ].filter(l=>l.value>0);
 
   const container=document.getElementById("sankey-container");
-  const W=Math.max(container.offsetWidth||900,900),H=360;
+  const W=Math.max(container.offsetWidth||900,900),H=420;
 
-  // ── Remove old SVG with fade ──
-  d3.select("#sankey-container svg").transition().duration(200).style("opacity",0).remove();
+  d3.select("#sankey-container svg").remove();
 
   const svg=d3.select("#sankey-container").append("svg")
     .attr("width",W).attr("height",H)
-    .style("background","#161B22").style("border-radius","8px")
-    .style("opacity",0);
+    .style("background","#161B22").style("border-radius","8px");
 
-  // Build sankey layout
   const sankeyLayout=d3.sankey()
-    .nodeId(d=>d.index).nodeWidth(18).nodePadding(12)
-    .extent([[24,24],[W-24,H-24]]);
+    .nodeId(d=>d.index).nodeWidth(16).nodePadding(18)
+    .extent([[20,20],[W-180,H-40]]);
 
   const graph=sankeyLayout({
     nodes:nodes.map((n,i)=>({...n,index:i})),
@@ -492,78 +592,46 @@ function renderSankey(){
   const link=svg.append("g").attr("fill","none")
     .selectAll("path").data(graph.links).join("path")
     .attr("d",d3.sankeyLinkHorizontal())
-    .attr("stroke",d=>colorMap[d.source.name]||"#4FC3F7")
-    .attr("stroke-width",d=>Math.max(1.5,d.width))
-    .attr("opacity",0.28)
+    .attr("stroke",d=>colorMap[d.target.name]||"#4FC3F7")
+    .attr("stroke-width",d=>Math.max(2,d.width))
+    .attr("opacity",0.3)
     .style("cursor","pointer")
     .on("mouseover",function(event,d){
-      // Highlight this link
-      d3.select(this).transition().duration(150).attr("opacity",0.75).attr("stroke-width",d=>Math.max(3,d.width+2));
-      // Dim all other links
-      link.filter(l=>l!==d).transition().duration(150).attr("opacity",0.07);
+      d3.select(this).transition().duration(120).attr("opacity",0.7);
+      link.filter(l=>l!==d).transition().duration(120).attr("opacity",0.08);
       showTip(
-        `<div style="font-weight:700;color:${colorMap[d.source.name]||"#4FC3F7"};margin-bottom:5px">${d.source.name} → ${d.target.name}</div>
-         <div style="font-size:15px;font-weight:800;color:#E6EDF3">${d.value.toLocaleString("en-IN")} <span style="font-size:11px;color:#8B949E">TPD</span></div>
-         <div style="font-size:10px;color:#8B949E;margin-top:3px">${((d.value/total)*100).toFixed(1)}% of total MSW</div>`,
-        event
-      );
+        `<div style="font-weight:700;color:${colorMap[d.target.name]}">${d.source.name} → ${d.target.name}</div>
+         <div style="font-size:16px;font-weight:800;margin-top:4px">${d.value.toLocaleString("en-IN")} TPD</div>
+         <div style="font-size:10px;color:#8B949E;margin-top:3px">${((d.value/total)*100).toFixed(1)}% of total</div>`,event);
     })
     .on("mousemove",moveTip)
     .on("mouseout",function(){
-      link.transition().duration(200).attr("opacity",0.28).attr("stroke-width",d=>Math.max(1.5,d.width));
-      hideTip();
+      link.transition().duration(200).attr("opacity",0.3);hideTip();
     });
 
   // ── Nodes ──
-  const drag=d3.drag()
-    .on("start",function(){d3.select(this).raise();})
-    .on("drag",function(event,d){
-      d.y0=Math.max(24,Math.min(H-24-(d.y1-d.y0),d.y0+event.dy));
-      d.y1=d.y0+(d.y1-d.y0 < 0 ? 0 : d.y1-d.y0);
-      // Update node position
-      d3.select(this).select("rect").attr("y",d.y0);
-      d3.select(this).select("text").attr("y",(d.y0+d.y1)/2);
-      // Recalculate link paths
-      sankeyLayout.update(graph);
-      link.attr("d",d3.sankeyLinkHorizontal());
-    });
-
-  const node=svg.append("g").selectAll("g").data(graph.nodes).join("g")
-    .style("cursor","grab")
-    .call(drag);
-
+  const node=svg.append("g").selectAll("g").data(graph.nodes).join("g");
   node.append("rect")
     .attr("x",d=>d.x0).attr("y",d=>d.y0)
     .attr("height",d=>Math.max(4,d.y1-d.y0))
     .attr("width",d=>d.x1-d.x0)
     .attr("fill",d=>colorMap[d.name]||"#8B949E")
-    .attr("rx",3)
-    .attr("opacity",0.9)
+    .attr("rx",3).attr("opacity",0.9)
+    .style("cursor","pointer")
     .on("mouseover",function(event,d){
-      // Highlight connected links
-      link.transition().duration(150)
-        .attr("opacity",l=>(l.source===d||l.target===d)?0.8:0.05)
-        .attr("stroke-width",l=>l.source===d||l.target===d ? Math.max(3,l.width+2) : Math.max(1.5,l.width));
-      d3.select(this).transition().duration(150).attr("opacity",1).attr("x",d=>d.x0-1).attr("width",d=>d.x1-d.x0+2);
-      const inflow=d.targetLinks.reduce((a,l)=>a+l.value,0);
-      const outflow=d.sourceLinks.reduce((a,l)=>a+l.value,0);
+      link.transition().duration(120)
+        .attr("opacity",l=>(l.source===d||l.target===d)?0.7:0.05);
+      const inf=d.targetLinks.reduce((a,l)=>a+l.value,0);
+      const out=d.sourceLinks.reduce((a,l)=>a+l.value,0);
       showTip(
-        `<div style="font-weight:800;color:${colorMap[d.name]||"#4FC3F7"};margin-bottom:6px;font-size:13px">${d.name}</div>
-         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">
-           <div style="color:#8B949E">Volume</div><div style="font-weight:700">${Math.round(d.value).toLocaleString("en-IN")} TPD</div>
-           <div style="color:#8B949E">% of MSW</div><div style="font-weight:700">${((d.value/total)*100).toFixed(1)}%</div>
-           ${inflow?`<div style="color:#8B949E">Inflow</div><div style="color:#69F0AE">${inflow.toLocaleString("en-IN")} TPD</div>`:""}
-           ${outflow?`<div style="color:#8B949E">Outflow</div><div style="color:#4FC3F7">${outflow.toLocaleString("en-IN")} TPD</div>`:""}
-         </div>`,
-        event
-      );
+        `<div style="font-weight:800;color:${colorMap[d.name]};font-size:13px">${d.name}</div>
+         <div style="font-size:16px;font-weight:800;margin-top:4px">${Math.round(d.value).toLocaleString("en-IN")} TPD</div>
+         <div style="font-size:10px;color:#8B949E">${((d.value/total)*100).toFixed(1)}% of total</div>
+         ${inf?`<div style="font-size:10px;color:#69F0AE;margin-top:3px">In: ${inf.toLocaleString("en-IN")} TPD</div>`:""}
+         ${out?`<div style="font-size:10px;color:#4FC3F7">Out: ${out.toLocaleString("en-IN")} TPD</div>`:""}`,event);
     })
     .on("mousemove",moveTip)
-    .on("mouseout",function(){
-      link.transition().duration(200).attr("opacity",0.28).attr("stroke-width",d=>Math.max(1.5,d.width));
-      d3.select(this).transition().duration(150).attr("opacity",0.9).attr("x",d=>d.x0).attr("width",d=>d.x1-d.x0);
-      hideTip();
-    });
+    .on("mouseout",function(){link.transition().duration(200).attr("opacity",0.3);hideTip();});
 
   // ── Labels ──
   node.append("text")
@@ -571,46 +639,463 @@ function renderSankey(){
     .attr("y",d=>(d.y1+d.y0)/2)
     .attr("dy","0.35em")
     .attr("text-anchor",d=>d.x0<W/2?"start":"end")
-    .attr("fill","#E6EDF3")
-    .attr("font-size","10px")
-    .attr("font-family","monospace")
-    .attr("pointer-events","none")
-    .text(d=>`${d.name} (${(Math.round(d.value/100)/10).toFixed(1)}K TPD)`);
+    .attr("fill","#E6EDF3").attr("font-size","10px")
+    .attr("font-weight","600").attr("pointer-events","none")
+    .text(d=>{
+      const v=d.value>=1000?(Math.round(d.value/100)/10).toFixed(1)+"K":d.value;
+      return `${d.name}  ${v} TPD`;
+    });
 
   // ── Legend ──
-  const legendData=[
-    {label:"Recovery stream",color:"#00BFA5"},
-    {label:"Leakage / loss",color:"#FF5252"},
-    {label:"Processing",color:"#69F0AE"},
-    {label:"Informal",color:"#CE93D8"},
+  const leg=[
+    {l:"Collection",c:"#4FC3F7"},{l:"Segregation",c:"#69F0AE"},{l:"Informal",c:"#CE93D8"},
+    {l:"Processing",c:"#FFB300"},{l:"Recovery",c:"#00BFA5"},{l:"Landfill / Lost",c:"#FF5252"}
   ];
-  const lg=svg.append("g").attr("transform",`translate(${W-180},${H-60})`);
-  legendData.forEach((d,i)=>{
-    lg.append("rect").attr("x",0).attr("y",i*14).attr("width",10).attr("height",10).attr("fill",d.color).attr("rx",2);
-    lg.append("text").attr("x",14).attr("y",i*14+9).attr("fill","#8B949E").attr("font-size","9px").text(d.label);
+  const lG=svg.append("g").attr("transform",`translate(${W-155},16)`);
+  lG.append("rect").attr("x",-8).attr("y",-6).attr("width",148).attr("height",leg.length*14+10)
+    .attr("fill","#0D1117").attr("stroke","#30363D").attr("rx",6).attr("opacity",0.9);
+  leg.forEach((d,i)=>{
+    lG.append("rect").attr("x",0).attr("y",i*14).attr("width",8).attr("height",8).attr("fill",d.c).attr("rx",2);
+    lG.append("text").attr("x",12).attr("y",i*14+7).attr("fill","#8B949E").attr("font-size","9px").text(d.l);
   });
 
-  // ── Hint ──
-  svg.append("text").attr("x",W/2).attr("y",H-8)
-    .attr("text-anchor","middle").attr("fill","#30363D").attr("font-size","9px")
-    .text("Hover links/nodes for details · Drag nodes to rearrange");
+  // ── Key metrics bar at bottom ──
+  const metrics=[
+    {l:"Collection",v:g.collection+"%",c:"#4FC3F7"},
+    {l:"Segregation",v:g.segregation+"%",c:"#69F0AE"},
+    {l:"Recovery",v:Math.round(recycled/total*100)+"%",c:"#00BFA5"},
+    {l:"Landfill",v:Math.round(toLandfill/total*100)+"%",c:"#FF5252"},
+    {l:"Circularity",v:Math.round(recycled/total*100)+"%",c:"#69F0AE"}
+  ];
+  const mG=svg.append("g").attr("transform",`translate(20,${H-14})`);
+  let mx=0;
+  metrics.forEach(m=>{
+    mG.append("text").attr("x",mx).attr("y",0).attr("fill",m.c)
+      .attr("font-size","10px").attr("font-weight","700").text(m.v);
+    mG.append("text").attr("x",mx+30).attr("y",0).attr("fill","#8B949E")
+      .attr("font-size","9px").text(m.l);
+    mx+=Math.max(100,(m.l.length+m.v.length)*7+30);
+  });
 
-  // ── Fade in ──
-  svg.transition().duration(500).style("opacity",1);
+  }catch(e){console.error("Sankey render error:",e);}
 }
 function renderFlow(){
-  const nodes=[{i:"🏘️",l:"Consumers",s:"1,62,000 TPD",st:"ok"},{i:"🚛",l:"Formal Collectors",s:"ULBs / SWM",st:"ok",br:{i:"♻️",l:"Informal Collectors",s:"~20L workers",st:"informal"}},{i:"🏭",l:"MRFs / Sorting",s:"2,900 MRFs",st:"warning"},{i:"🛒",l:"Scrap Dealers",s:"Unorganised",st:"warning"},{i:"📦",l:"Aggregators",s:"Capital gap ⚠",st:"critical",lk:"12,600 TPD leakage"},{i:"🔄",l:"Recyclers",s:"Banyan, Attero…",st:"ok"},{i:"⚙️",l:"Processors",s:"CBG/WtE/RDF",st:"warning"},{i:"🗑️",l:"Landfill/Legacy",s:"62,631 sites ⚠",st:"critical"}];
-  document.getElementById("flow-diagram").innerHTML=nodes.map((n,idx)=>`
-    <div class="flow-col">
-      <div class="flow-node ${n.st}" style="position:relative">
-        <div class="node-icon">${n.i}</div>${n.l}<div class="node-tpd">${n.s}</div>
-        ${n.lk?`<div class="flow-leak">↓ ${n.lk}</div>`:""}
-      </div>
-      ${n.br?`<div class="flow-node ${n.br.st}"><div class="node-icon">${n.br.i}</div>${n.br.l}<div class="node-tpd">${n.br.s}</div></div>`:""}
-    </div>
-    ${idx<nodes.length-1?`<div class="flow-arrow">→</div>`:""}
-  `).join("");
+  const g=currentGeo;
+  const fmtTPD=v=>v>=1000?(Math.round(v/100)/10).toFixed(1)+"K":v;
+  const collected=Math.round(g.tpd*g.collection/100);
+  const uncollected=g.tpd-collected;
+  const informalRec=Math.round(uncollected*0.35);
+  const segDry=Math.round(collected*(g.segregation/100)*0.30);
+  const segWet=Math.round(collected*(g.segregation/100)*0.50);
+  const mrfVol=segDry+Math.round(informalRec*0.30);
+  const recyclerVol=Math.round(mrfVol*0.55)+Math.round((Math.round(informalRec*0.55)+Math.round(mrfVol*0.15))*0.65);
+  const recycledMat=Math.round(recyclerVol*0.80);
+
+  // Top row: Formal path
+  const topRow=[
+    {i:"🏘️",l:"Consumers",s:fmtTPD(g.tpd)+" TPD",st:"ok"},
+    {i:"🚛",l:"Formal Collectors",s:fmtTPD(collected)+" TPD",st:"ok"},
+    {i:"📊",l:"Segregation",s:g.segregation+"% eff.",st:g.segregation>=70?"ok":g.segregation>=50?"warning":"critical"},
+    {i:"🏭",l:"MRF/Sorting",s:fmtTPD(mrfVol)+" TPD",st:"warning"},
+    {i:"⚙️",l:"Processors",s:"CBG/WtE/RDF",st:"warning"},
+    {i:"🔄",l:"Recyclers",s:fmtTPD(recyclerVol)+" TPD",st:"ok"}
+  ];
+  // Bottom row: Informal path
+  const botRow=[
+    {i:"♻️",l:"Informal Collectors",s:fmtTPD(informalRec)+" TPD",st:"informal"},
+    {i:"🛒",l:"Scrap Dealers",s:"Unorganised",st:"warning"},
+    {i:"📦",l:"Aggregators",s:"Capital gap",st:"critical"}
+  ];
+  // Post-convergence
+  const postRow=[
+    {i:"🌱",l:"Recycled Material",s:fmtTPD(recycledMat)+" TPD",st:"ok"}
+  ];
+  // Side outputs
+  const sideOutputs=[
+    {from:"MRF",to:"Landfill",label:"Rejected",color:"var(--coral)"},
+    {from:"MRF",to:"RDF",label:"RDF stream",color:"var(--amber)"},
+    {from:"Processors",to:"Landfill",label:"Residual",color:"var(--coral)"},
+    {from:"Processors",to:"RDF",label:"RDF",color:"var(--amber)"}
+  ];
+
+  let html=`<div style="position:relative;min-width:1000px">`;
+  // Top formal row
+  html+=`<div style="display:flex;align-items:center;gap:0;margin-bottom:8px">`;
+  topRow.forEach((n,idx)=>{
+    html+=`<div class="flow-node ${n.st}" style="position:relative"><div class="node-icon">${n.i}</div>${n.l}<div class="node-tpd">${n.s}</div></div>`;
+    if(idx<topRow.length-1) html+=`<div class="flow-arrow">→</div>`;
+  });
+  html+=`</div>`;
+
+  // Branching indicator
+  html+=`<div style="display:flex;align-items:center;margin:4px 0 4px 0px"><div style="font-size:9px;color:var(--purple);margin-left:6px">↓ branches from Consumers (uncollected waste)</div></div>`;
+
+  // Bottom informal row
+  html+=`<div style="display:flex;align-items:center;gap:0;margin-bottom:8px;padding-left:0px">`;
+  botRow.forEach((n,idx)=>{
+    html+=`<div class="flow-node ${n.st}"><div class="node-icon">${n.i}</div>${n.l}<div class="node-tpd">${n.s}</div></div>`;
+    if(idx<botRow.length-1) html+=`<div class="flow-arrow">→</div>`;
+  });
+  html+=`<div class="flow-arrow" style="color:var(--purple)">↗</div>`;
+  html+=`<div style="font-size:9px;color:var(--purple);padding:4px 8px;border:1px dashed var(--purple);border-radius:6px">merges into Recyclers ↑</div>`;
+  html+=`</div>`;
+
+  // Waste Transporters connector
+  html+=`<div style="display:flex;align-items:center;gap:8px;margin:6px 0 6px 0"><div class="flow-node informal" style="border-color:var(--amber);background:#FFB30010;min-width:auto;padding:6px 10px"><div class="node-icon" style="font-size:14px">🚚</div>Waste Transporters<div class="node-tpd">Between all stages</div></div>`;
+
+  // Side outputs summary
+  html+=`<div style="display:flex;gap:6px;flex-wrap:wrap">`;
+  sideOutputs.forEach(s=>{
+    html+=`<div style="font-size:9px;padding:3px 8px;border:1px solid var(--border);border-radius:4px;color:${s.color}">${s.from} → ${s.to}: ${s.label}</div>`;
+  });
+  html+=`</div></div>`;
+
+  // Post-convergence: Recycled Material → loop back
+  html+=`<div style="display:flex;align-items:center;gap:0;margin-top:8px">`;
+  postRow.forEach(n=>{
+    html+=`<div class="flow-node ${n.st}"><div class="node-icon">${n.i}</div>${n.l}<div class="node-tpd">${n.s}</div></div>`;
+  });
+  html+=`<div class="flow-arrow" style="color:var(--green);font-size:14px">⟲</div>`;
+  html+=`<div style="font-size:10px;color:var(--green);padding:6px 12px;border:2px solid var(--green);border-radius:8px;font-weight:700;background:#69F0AE10">CIRCULARITY LOOP → back to Consumers</div>`;
+
+  // Terminal endpoints
+  html+=`<div style="margin-left:auto;display:flex;gap:6px">`;
+  html+=`<div class="flow-node critical" style="min-width:auto;padding:8px 10px"><div class="node-icon">🗑️</div>Landfill<div class="node-tpd">${fmtTPD(Math.round(g.tpd*0.30))} TPD</div></div>`;
+  html+=`<div class="flow-node warning" style="min-width:auto;padding:8px 10px"><div class="node-icon">🔥</div>RDF<div class="node-tpd">${fmtTPD(Math.round(g.tpd*0.08))} TPD</div></div>`;
+  html+=`</div>`;
+
+  html+=`</div>`;
+  html+=`</div>`;
+
+  document.getElementById("flow-diagram").innerHTML=html;
 }
+function renderCircularityModel(){
+  try{
+  const ctn=document.getElementById("circularity-container");
+  ctn.innerHTML="";
+  const g=currentGeo,total=g.tpd;
+  const collEff=g.collection, segEff=g.segregation, procEff=g.processing;
+  const mrfEff=55, recEff=80;
+  const collected=Math.round(total*collEff/100), uncollected=total-collected;
+  const formalColl=Math.round(collected*0.82), infRec=Math.round(uncollected*0.35);
+  const segDry=Math.round(formalColl*segEff/100*0.30), segWet=Math.round(formalColl*segEff/100*0.50);
+  const mrfIn=segDry+Math.round(infRec*0.30);
+  const mrfOut=Math.round(mrfIn*mrfEff/100);
+  const aggIn=Math.round(infRec*0.55)+Math.round(mrfIn*0.15);
+  const recIn=mrfOut+Math.round(aggIn*0.65);
+  const recycledMat=Math.round(recIn*recEff/100);
+  const fmtV=v=>v>=1000?(Math.round(v/100)/10).toFixed(1)+"K":v+"";
+
+  const W=Math.max(ctn.offsetWidth||900,900),H=580;
+  const svg=d3.select("#circularity-container").append("svg")
+    .attr("width",W).attr("height",H).attr("viewBox","0 0 1000 580")
+    .style("background","#161B22").style("border-radius","8px");
+
+  const defs=svg.append("defs");
+  const cols={formal:"#4FC3F7",informal:"#CE93D8",processing:"#FFB300",circ:"#69F0AE",waste:"#FF5252",recovery:"#00BFA5"};
+  Object.entries(cols).forEach(([k,c])=>{
+    defs.append("marker").attr("id","cm-a-"+k).attr("viewBox","0 0 8 6").attr("refX",8).attr("refY",3)
+      .attr("markerWidth",7).attr("markerHeight",5).attr("orient","auto")
+      .append("path").attr("d","M0,0 L8,3 L0,6Z").attr("fill",c);
+  });
+
+  // --- NODE POSITIONS (viewBox 1000x580, generous spacing) ---
+  const N={
+    newMat:    {x:60, y:40, w:130,h:44, label:"New Material",         val:total,               col:cols.circ},
+    matUse:    {x:260,y:40, w:150,h:44, label:"Materials in Use",     val:total,               col:cols.formal},
+    wasteGen:  {x:510,y:40, w:150,h:44, label:"Waste Generated",     val:total,               col:"#FFB300"},
+    wasteDisp: {x:370,y:140,w:140,h:40, label:"Waste Disposed",      val:collected,           col:cols.formal},
+    uncoll:    {x:640,y:140,w:160,h:40, label:"Stock of Uncollected", val:uncollected,         col:cols.waste},
+    formalColl:{x:240,y:230,w:170,h:40, label:"Waste Collected",     val:formalColl,          col:cols.formal},
+    infRec:    {x:680,y:230,w:150,h:40, label:"Informal Recovery",   val:infRec,              col:cols.informal},
+    segDry:    {x:120,y:320,w:140,h:40, label:"Segregated Dry",      val:segDry,              col:cols.circ},
+    segWet:    {x:340,y:320,w:140,h:40, label:"Segregated Wet",      val:segWet,              col:cols.circ},
+    scrap:     {x:700,y:320,w:140,h:40, label:"Scrap Dealers",       val:infRec,              col:cols.informal},
+    mrf:       {x:100,y:420,w:160,h:40, label:"MRF/Sorting Centres", val:mrfIn,               col:cols.formal},
+    compost:   {x:320,y:420,w:160,h:40, label:"Composting/Bio-Conv", val:segWet,              col:cols.circ},
+    recyclers: {x:520,y:420,w:130,h:40, label:"Recyclers",           val:recIn,               col:cols.recovery},
+    agg:       {x:700,y:420,w:160,h:40, label:"Aggregators",         val:aggIn,               col:"#FFB300"},
+    processors:{x:700,y:510,w:150,h:40, label:"Waste Processors",    val:Math.round(aggIn*0.35),col:"#FFB300"},
+    rdf:       {x:530,y:510,w:100,h:40, label:"RDF",                 val:Math.round(mrfIn*0.10+Math.round(aggIn*0.35)*0.50),col:"#FFB300"},
+    landfill:  {x:880,y:510,w:100,h:40, label:"Landfill",            val:Math.round(total*0.30),col:cols.waste},
+    recMat:    {x:310,y:510,w:150,h:40, label:"Recycled Material",   val:recycledMat,         col:cols.circ},
+  };
+
+  // --- FLOWS (from→to, exit side, entry side) ---
+  function edge(fromId,toId,type,exitSide,entrySide){
+    const a=N[fromId],b=N[toId];
+    if(!a||!b) return;
+    let x1,y1,x2,y2;
+    if(exitSide==="r"){x1=a.x+a.w;y1=a.y+a.h/2;}
+    else if(exitSide==="b"){x1=a.x+a.w/2;y1=a.y+a.h;}
+    else if(exitSide==="l"){x1=a.x;y1=a.y+a.h/2;}
+    else{x1=a.x+a.w/2;y1=a.y;}
+    if(entrySide==="l"){x2=b.x;y2=b.y+b.h/2;}
+    else if(entrySide==="t"){x2=b.x+b.w/2;y2=b.y;}
+    else if(entrySide==="r"){x2=b.x+b.w;y2=b.y+b.h/2;}
+    else{x2=b.x+b.w/2;y2=b.y+b.h;}
+    const mx=(x1+x2)/2,my=(y1+y2)/2;
+    let d;
+    if(exitSide==="b"&&entrySide==="t") d=`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`;
+    else if(exitSide==="r"&&entrySide==="l") d=`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+    else d=`M${x1},${y1} Q${mx},${y2} ${x2},${y2}`;
+    const c=cols[type]||cols.formal;
+    svg.append("path").attr("d",d).attr("fill","none").attr("stroke",c)
+      .attr("stroke-width",1.5).attr("opacity",0.45).attr("marker-end",`url(#cm-a-${type})`);
+  }
+
+  // Main chain
+  edge("newMat","matUse","circ","r","l");
+  edge("matUse","wasteGen","formal","r","l");
+  edge("wasteGen","wasteDisp","formal","b","t");
+  edge("wasteGen","uncoll","waste","b","t");
+  edge("wasteDisp","formalColl","formal","b","t");
+  edge("uncoll","infRec","informal","b","t");
+  // Formal path
+  edge("formalColl","segDry","formal","b","t");
+  edge("formalColl","segWet","formal","b","t");
+  edge("segDry","mrf","formal","b","t");
+  edge("segWet","compost","recovery","b","t");
+  edge("mrf","recyclers","recovery","r","l");
+  edge("mrf","rdf","processing","b","t");
+  edge("mrf","landfill","waste","r","l");
+  // Informal path
+  edge("infRec","scrap","informal","b","t");
+  edge("scrap","agg","informal","b","t");
+  edge("scrap","mrf","informal","b","l");
+  edge("agg","recyclers","recovery","l","r");
+  edge("agg","processors","processing","b","t");
+  edge("processors","rdf","processing","l","r");
+  edge("processors","landfill","waste","r","l");
+  // Recyclers → Recycled Material
+  edge("recyclers","recMat","circ","b","t");
+  edge("compost","recMat","circ","b","r");
+
+  // --- CIRCULARITY LOOP (dashed green, curved left side) ---
+  const rm=N.recMat, mu=N.newMat;
+  svg.append("path")
+    .attr("d",`M${rm.x},${rm.y+rm.h/2} C${30},${rm.y+rm.h/2} ${30},${mu.y+mu.h/2} ${mu.x},${mu.y+mu.h/2}`)
+    .attr("fill","none").attr("stroke",cols.circ).attr("stroke-width",2.5)
+    .attr("opacity",0.6).attr("stroke-dasharray","8,5")
+    .attr("marker-end","url(#cm-a-circ)")
+    .style("cursor","pointer")
+    .on("mouseover",function(event){
+      d3.select(this).transition().duration(150).attr("opacity",1).attr("stroke-width",4);
+      showTip(`<div style="font-weight:700;color:#69F0AE">CIRCULARITY LOOP</div><div style="font-size:14px;font-weight:800;margin-top:4px">${recycledMat.toLocaleString("en-IN")} TPD</div><div style="font-size:10px;color:#8B949E;margin-top:3px">${((recycledMat/total)*100).toFixed(1)}% circularity rate</div>`,event);
+    }).on("mousemove",moveTip)
+    .on("mouseout",function(){d3.select(this).transition().duration(200).attr("opacity",0.6).attr("stroke-width",2.5);hideTip();});
+  // Loop label
+  svg.append("text").attr("x",18).attr("y",320).attr("fill",cols.circ)
+    .attr("font-size","9px").attr("font-weight","700").attr("letter-spacing","1px")
+    .attr("transform","rotate(-90,18,320)").text("CIRCULARITY LOOP");
+
+  // --- DRAW NODES (on top of flows) ---
+  const nodeG=svg.append("g");
+  Object.values(N).forEach(n=>{
+    const grp=nodeG.append("g").style("cursor","pointer");
+    grp.append("rect").attr("x",n.x).attr("y",n.y).attr("width",n.w).attr("height",n.h)
+      .attr("fill",n.col+"15").attr("stroke",n.col).attr("stroke-width",1.5).attr("rx",6);
+    grp.append("text").attr("x",n.x+n.w/2).attr("y",n.y+n.h/2-6)
+      .attr("text-anchor","middle").attr("fill","#E6EDF3")
+      .attr("font-size","10px").attr("font-weight","600").text(n.label);
+    grp.append("text").attr("x",n.x+n.w/2).attr("y",n.y+n.h/2+8)
+      .attr("text-anchor","middle").attr("fill",n.col)
+      .attr("font-size","9px").attr("font-weight","700").text(fmtV(n.val)+" TPD");
+    grp.on("mouseover",function(event){
+      d3.select(this).select("rect").transition().duration(120).attr("stroke-width",3);
+      showTip(`<div style="font-weight:800;color:${n.col}">${n.label}</div><div style="font-size:15px;font-weight:800;margin-top:4px">${n.val.toLocaleString("en-IN")} TPD</div><div style="font-size:10px;color:#8B949E;margin-top:3px">${((n.val/total)*100).toFixed(1)}% of total</div>`,event);
+    }).on("mousemove",moveTip)
+    .on("mouseout",function(){d3.select(this).select("rect").transition().duration(120).attr("stroke-width",1.5);hideTip();});
+  });
+
+  // --- LEGEND (bottom-right, compact) ---
+  const leg=[{l:"Formal",c:cols.formal},{l:"Informal",c:cols.informal},{l:"Processing",c:"#FFB300"},{l:"Circularity",c:cols.circ},{l:"Landfill",c:cols.waste},{l:"Recovery",c:cols.recovery}];
+  const lG=svg.append("g").attr("transform","translate(900,420)");
+  lG.append("rect").attr("x",-8).attr("y",-8).attr("width",95).attr("height",leg.length*15+12)
+    .attr("fill","#0D1117").attr("stroke","#30363D").attr("rx",6).attr("opacity",0.85);
+  leg.forEach((d,i)=>{
+    lG.append("rect").attr("x",0).attr("y",i*15).attr("width",8).attr("height",8).attr("fill",d.c).attr("rx",2);
+    lG.append("text").attr("x",12).attr("y",i*15+7).attr("fill","#8B949E").attr("font-size","8px").text(d.l);
+  });
+
+  // --- EFFICIENCY PARAM CARDS ---
+  const params=[
+    {label:"Collection Efficiency",val:collEff+"%",color:cols.formal},
+    {label:"Segregation Efficiency",val:segEff+"%",color:cols.circ},
+    {label:"MRF Recovery Rate",val:mrfEff+"%",color:cols.formal},
+    {label:"Recycling Efficiency",val:recEff+"%",color:cols.recovery},
+    {label:"Processing Efficiency",val:procEff+"%",color:"#FFB300"},
+    {label:"Circularity Rate",val:((recycledMat/total)*100).toFixed(1)+"%",color:cols.circ}
+  ];
+  document.getElementById("efficiency-params").innerHTML=params.map(p=>
+    `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;border-top:3px solid ${p.color};min-width:130px;text-align:center;flex:1">
+      <div style="font-size:20px;font-weight:800;color:${p.color}">${p.val}</div>
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px">${p.label}</div>
+    </div>`
+  ).join("");
+  }catch(e){console.error("Circularity model render error:",e);}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BASELINE REFERENCE — Clean system dynamics diagram from PPTX
+// ═══════════════════════════════════════════════════════════════
+function renderBaselineCircularity(){
+  d3.select("#baseline-circularity-svg").selectAll("*").remove();
+  const container=document.getElementById("baseline-circularity-svg");
+  if(!container) return;
+  const W=Math.max(container.offsetWidth||1000,800),H=650;
+
+  const svg=d3.select("#baseline-circularity-svg").append("svg")
+    .attr("width",W).attr("height",H).attr("viewBox","0 0 1200 650")
+    .style("background","#0d1117").style("border-radius","8px").style("border","1px solid #30363D");
+
+  const defs=svg.append("defs");
+  defs.append("marker").attr("id","bl-a").attr("viewBox","0 0 8 6").attr("refX",8).attr("refY",3)
+    .attr("markerWidth",7).attr("markerHeight",5).attr("orient","auto")
+    .append("path").attr("d","M0,0 L8,3 L0,6Z").attr("fill","#4FC3F7");
+  defs.append("marker").attr("id","bl-ag").attr("viewBox","0 0 8 6").attr("refX",8).attr("refY",3)
+    .attr("markerWidth",7).attr("markerHeight",5).attr("orient","auto")
+    .append("path").attr("d","M0,0 L8,3 L0,6Z").attr("fill","#69F0AE");
+  defs.append("marker").attr("id","bl-ap").attr("viewBox","0 0 8 6").attr("refX",8).attr("refY",3)
+    .attr("markerWidth",7).attr("markerHeight",5).attr("orient","auto")
+    .append("path").attr("d","M0,0 L8,3 L0,6Z").attr("fill","#F48FB1");
+
+  // === ACTOR REGIONS (subtle dashed boundaries) ===
+  const regions=[
+    {label:"Consumers & Generators",x:30,y:380,w:280,h:230,lx:170,ly:620},
+    {label:"Formal Collectors",x:310,y:410,w:190,h:200,lx:405,ly:620},
+    {label:"Informal Collectors",x:330,y:210,w:170,h:110,lx:415,ly:225},
+    {label:"Scrap Dealers",x:530,y:120,w:210,h:130,lx:635,ly:138},
+    {label:"Aggregators",x:880,y:120,w:290,h:180,lx:1025,ly:138},
+    {label:"MRFs/Sorting",x:600,y:360,w:200,h:120,lx:700,ly:375},
+    {label:"Recyclers",x:420,y:30,w:340,h:80,lx:590,ly:45},
+    {label:"Waste Processors",x:940,y:330,w:230,h:250,lx:1055,ly:590},
+    {label:"Waste Transporters",x:520,y:490,w:350,h:80,lx:695,ly:575}
+  ];
+  regions.forEach(r=>{
+    svg.append("rect").attr("x",r.x).attr("y",r.y).attr("width",r.w).attr("height",r.h)
+      .attr("fill","none").attr("stroke","#30363D").attr("stroke-width",1.5)
+      .attr("stroke-dasharray","8,5").attr("rx",12);
+    svg.append("text").attr("x",r.lx).attr("y",r.ly)
+      .attr("text-anchor","middle").attr("fill","#FF9800").attr("font-size","10px")
+      .attr("font-weight","700").attr("opacity",0.7).text(r.label);
+  });
+
+  // === STOCK NODES ===
+  const S=[
+    {id:"nm",  l:"New Material",              x:60,  y:480,w:120,h:32},
+    {id:"mu",  l:"Materials in Use",          x:100, y:430,w:140,h:32},
+    {id:"wd",  l:"Waste Disposed",            x:330, y:480,w:110,h:32},
+    {id:"wc",  l:"Waste Collected",           x:460, y:480,w:110,h:32},
+    {id:"su",  l:"Stock of Uncollected",      x:250, y:260,w:150,h:30},
+    {id:"rp",  l:"Recycled Products",         x:110, y:280,w:135,h:30},
+    {id:"rm",  l:"Recycled Material in Use",  x:60,  y:360,w:150,h:30},
+    {id:"ws",  l:"Wet Waste Segregated",      x:500, y:420,w:130,h:28, green:true},
+    {id:"sd",  l:"Segregated Dry Waste",      x:560, y:490,w:130,h:28},
+    {id:"bc",  l:"Bio-Conversion",            x:480, y:360,w:110,h:28, green:true},
+    {id:"ic",  l:"Informal Collection",       x:390, y:260,w:140,h:30},
+    {id:"sc",  l:"Waste with Scrap Dealers",  x:560, y:195,w:160,h:30},
+    {id:"ag",  l:"Waste with Aggregators",    x:920, y:175,w:160,h:30},
+    {id:"ur",  l:"Upcycling & Recycling",     x:960, y:240,w:140,h:28},
+    {id:"nr",  l:"New Recycled Material",     x:440, y:60,w:170,h:30},
+    {id:"mf",  l:"Waste with MRF",            x:680, y:390,w:120,h:32},
+    {id:"wp",  l:"Waste under Processing",    x:970, y:380,w:150,h:30},
+    {id:"rf",  l:"Waste as RDF",              x:1050,y:440,w:100,h:28},
+    {id:"lf",  l:"Landfill",                  x:780, y:510,w:110,h:28},
+    {id:"rj",  l:"Rejected Waste",            x:830, y:440,w:110,h:24},
+  ];
+  const SM={};S.forEach(s=>SM[s.id]=s);
+
+  // === FLOW LINES (clean, no overlap) ===
+  function fl(pts,col,sw,mk,dash){
+    svg.append("path")
+      .attr("d",pts.map((p,i)=>i===0?`M${p[0]},${p[1]}`:`L${p[0]},${p[1]}`).join(" "))
+      .attr("fill","none").attr("stroke",col||"#4FC3F7").attr("stroke-width",sw||1.5)
+      .attr("marker-end",`url(#${mk||"bl-a"})`).attr("stroke-dasharray",dash||"none").attr("opacity",0.6);
+  }
+  function fc(x1,y1,x2,y2,col,mk){
+    const mx=(x1+x2)/2;
+    svg.append("path")
+      .attr("d",`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`)
+      .attr("fill","none").attr("stroke",col||"#4FC3F7").attr("stroke-width",1.5)
+      .attr("marker-end",`url(#${mk||"bl-a"})`).attr("opacity",0.6);
+  }
+
+  // Material chain
+  fc(60,496, 100,446, "#4FC3F7");     // New Material → Materials in Use
+  fl([[240,446],[330,496]]);           // Materials in Use → Waste Disposed
+  fl([[440,496],[460,496]]);           // Waste Disposed → Waste Collected
+  // Uncollected path
+  fl([[370,480],[330,290]]);           // Waste Disposed → Stock of Uncollected
+  fl([[400,270],[390,270]]);           // Stock → Informal Collection
+  fc(530,275, 560,210, "#CE93D8");    // Informal → Scrap Dealers
+  // Formal segregation
+  fc(510,480, 510,434, "#4FC3F7");    // Waste Collected → Wet Waste
+  fl([[570,496],[560,496]]);           // Waste Collected → Segregated Dry
+  fc(560,420, 490,374, "#69F0AE","bl-ag"); // Wet → Bio-Conversion
+  fl([[690,504],[680,406]]);           // Seg Dry → MRF
+  // Scrap Dealers flows
+  fc(720,210, 920,190, "#4FC3F7");    // Scrap → Aggregators
+  fc(640,225, 690,390, "#4FC3F7");    // Scrap → MRF
+  // Informal pilferage (dashed)
+  fl([[510,460],[600,230]],  "#4FC3F7",1,"bl-a","4,3");
+  // MRF outputs
+  fc(800,406, 830,452, "#4FC3F7");    // MRF → Rejected
+  fl([[940,452],[780,524]]);           // Rejected → Landfill
+  fc(760,422, 970,395, "#4FC3F7");    // MRF → Processing
+  fc(760,406, 960,250, "#4FC3F7");    // MRF → Aggregators via transport
+  // Aggregators
+  fl([[1040,205],[1000,240]]);         // Aggregators → Upcycling
+  fc(1030,268, 1020,380, "#4FC3F7");  // Upcycling → Processing
+  // Processing outputs
+  fl([[1120,410],[1080,440]]);         // Processing → RDF
+  fc(1070,410, 890,524, "#FF5252");   // Processing → Landfill
+  // Circularity loop (top)
+  fc(1080,190, 1080,80, "#4FC3F7");   // Aggregators → top
+  fl([[1080,75],[610,75]]);            // across top
+  fc(440,75, 245,280, "#4FC3F7");     // → Recycled Products
+  fl([[175,310],[130,360]]);           // Recycled Products → Recycled Material in Use
+  fl([[135,390],[140,430]]);           // Recycled Mat → Materials in Use
+  // Waste sent to landfill directly
+  fl([[570,518],[780,524]]);           // Seg Dry area → Landfill
+
+  // === EFFICIENCY PARAMETERS (orange/pink labels, no overlapping arrows) ===
+  const eff=[
+    {l:"Collection Efficiency",  x:400,y:460,c:"#FF9800"},
+    {l:"Segregation Efficiency", x:540,y:455,c:"#FF9800"},
+    {l:"MRF Efficiency",         x:810,y:385,c:"#FF5252"},
+    {l:"Recycling Efficiency",   x:860,y:70, c:"#FF5252"},
+    {l:"Processing Efficiency",  x:1080,y:500,c:"#FF5252"},
+    {l:"Lifespan of Products",   x:200,y:465,c:"#FF5252"},
+  ];
+  eff.forEach(e=>{
+    svg.append("text").attr("x",e.x).attr("y",e.y).attr("fill",e.c)
+      .attr("font-size","8px").attr("font-weight","600").attr("opacity",0.8).text(e.l);
+  });
+
+  // === DRAW STOCK NODES (on top) ===
+  S.forEach(s=>{
+    const grp=svg.append("g").style("cursor","pointer");
+    const c=s.green?"#69F0AE":"#4FC3F7";
+    grp.append("rect").attr("x",s.x).attr("y",s.y).attr("width",s.w).attr("height",s.h)
+      .attr("fill",c+"12").attr("stroke",c).attr("stroke-width",1.5).attr("rx",4);
+    grp.append("text").attr("x",s.x+s.w/2).attr("y",s.y+s.h/2+1)
+      .attr("text-anchor","middle").attr("fill","#E6EDF3")
+      .attr("font-size","9px").attr("font-weight","600").text(s.l);
+    grp.on("mouseover",function(event){
+      d3.select(this).select("rect").transition().duration(120).attr("stroke-width",3);
+      showTip(`<div style="font-weight:700;color:${c}">${s.l}</div><div style="font-size:10px;color:#8B949E;margin-top:4px">Stock variable — system dynamics model</div>`,event);
+    }).on("mousemove",moveTip)
+    .on("mouseout",function(){d3.select(this).select("rect").transition().duration(120).attr("stroke-width",1.5);hideTip();});
+  });
+
+  // === TITLE ===
+  svg.append("text").attr("x",50).attr("y",638).attr("fill","#69F0AE")
+    .attr("font-size","12px").attr("font-weight","700").text("Green");
+  svg.append("text").attr("x",95).attr("y",638).attr("fill","#8B949E")
+    .attr("font-size","12px").text(" \u2013 Circularity oriented systems structure");
+}
+
 function renderUnitEco(){
   const cards=[{t:"Collection Cost",v:"₹1,200–2,500",u:"/tonne",type:"cost",rows:[["Door-to-door","₹800–1,400"],["Transport to MRF","₹300–600"],["Worker wages","₹100–500"]]},{t:"MRF Revenue",v:"₹1,500–3,500",u:"/tonne dry",type:"revenue",rows:[["PET bottles","₹12,000–18,000"],["HDPE","₹8,000–12,000"],["Paper/cardboard","₹4,000–8,000"],["Mixed plastic","₹2,000–4,000"]]},{t:"Composting Net",v:"±₹600",u:"/tonne wet",type:"gap",rows:[["Processing cost","₹1,200–2,000"],["Compost revenue","₹800–1,800"],["Carbon credits","₹200–600"]]},{t:"CBG Revenue",v:"₹3,500–5,500",u:"/tonne wet",type:"revenue",rows:[["CBG sale (SATAT)","₹3,000–5,000"],["Organic manure","₹500–1,500"],["Gate fee","₹200–500"]]},{t:"Plastic Recycling",v:"₹4,000–12,000",u:"/tonne",type:"revenue",rows:[["Rigid plastic","₹6,000–12,000"],["Flexible plastic","₹2,000–4,500"],["MLP streams","₹400–1,200"]]},{t:"Working Capital Gap",v:"₹4,000–6,000 Cr",u:"nationally",type:"gap",rows:[["Scrap dealer inventory","₹2,000–3,000 Cr"],["Aggregator float","₹1,500–2,500 Cr"],["MRF operations","₹500–1,000 Cr"]]},{t:"Legacy Remediation",v:"₹800–2,500",u:"/tonne",type:"cost",rows:[["Bio-mining cost","₹800–1,500"],["Land reclamation","₹400–800"],["Carbon abatement","₹200–600"]]},{t:"Daily Value Leakage",v:"~₹31 Cr",u:"/day national",type:"gap",rows:[["At ₹2,500/tonne avg","₹31.5 Cr/day"],["Annual loss","~₹11,500 Cr/yr"],["% recoverable","~65%"]]}];
   document.getElementById("ue-grid").innerHTML=cards.map(c=>`<div class="ue-card ${c.type}"><div class="ue-title">${c.t}</div><div class="ue-val">${c.v}<span class="ue-unit">${c.u}</span></div><div class="ue-breakdown">${c.rows.map(r=>`<div class="ue-row"><span>${r[0]}</span><span style="color:var(--text)">${r[1]}</span></div>`).join("")}</div></div>`).join("");
@@ -677,12 +1162,22 @@ function initNavHL(){
 }
 document.addEventListener("DOMContentLoaded",()=>{
   renderKPIs();renderGeoCtx();
-  initMap();
-  renderSankey();renderFlow();renderUnitEco();renderGaps();
-  initCharts();renderCompare();renderActions();
-  initPartnerFilters();renderFunders();renderFocus();renderSources();
+  initMap();initCharts();
+  // Default active sub-tab is Sankey, render it
+  renderSankey();renderFlow();
+  switchSubtab._rendered = {'system-flows:sankey': true, 'system-flows:flow': true};
+  renderUnitEco();renderGaps();renderCompare();
+  initPartnerFilters();renderFunders();renderActions();renderFocus();
+  renderSources();
   initScrollObs();initNavHL();
-  window.addEventListener("resize",()=>{if(document.getElementById("sankey-container").offsetWidth>100)renderSankey();});
+  window.addEventListener("resize",()=>{
+    const ap=document.querySelector('#system-flows .subtab-panel.active');
+    if(ap && ap.dataset.stab){
+      const s=ap.dataset.stab;
+      if(switchSubtab._rendered) switchSubtab._rendered['system-flows:'+s]=false;
+      switchSubtab('system-flows',s);
+    }
+  });
 });
 </script>
 </body>
