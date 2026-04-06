@@ -365,7 +365,49 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 <section id="hidden-dynamics" class="section fade-in">
   <div class="section-title">Hidden Dynamics — What the Numbers Don't Show</div>
   <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Eight structural realities that shape India's urban solid waste system but rarely surface in official reporting, rankings, or investment decks.</p>
-  <div class="hd-wet-card" id="hd-wet"></div>
+  <div class="hd-wet-card">
+    <div class="hd-wet-header">
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--teal);margin-bottom:6px">&#9670; Spotlight &mdash; The Largest Unresolved Problem</div>
+        <div class="hd-wet-title">Wet Waste: India's Biggest Fraction Has No Working Solution</div>
+        <div class="hd-wet-sub">50&ndash;55% of all municipal solid waste is organic / wet waste &mdash; food scraps, kitchen waste, market waste. It is the heaviest, fastest-rotting, and most contaminating fraction. It also has the least functional end-to-end chain.</div>
+      </div>
+      <div class="hd-wet-stat">
+        <div class="hd-wet-stat-val">~93K</div>
+        <div class="hd-wet-stat-label">TPD wet waste<br>with no viable outlet</div>
+      </div>
+    </div>
+    <div class="hd-wet-cols">
+      <div class="hd-wet-col">
+        <div class="hd-wet-col-head problem">What's Failing</div>
+        <ul>
+          <li>Composting capacity: 1,14,000 TPD &mdash; actual throughput: ~35,000&ndash;40,000 TPD (30&ndash;35% utilisation)</li>
+          <li>Most composting plants are non-operational, poorly maintained, or producing substandard output with heavy metal contamination</li>
+          <li>Source segregation of wet waste &mdash; the prerequisite for everything &mdash; happens at scale in fewer than 10 cities</li>
+          <li>SATAT CBG target: 5,000 plants by 2024 &mdash; only 106 commissioned; biomethanation covers ~4,253 TPD nationally</li>
+        </ul>
+      </div>
+      <div class="hd-wet-col">
+        <div class="hd-wet-col-head gap">Why Offtake is Broken</div>
+        <ul>
+          <li>Compost subsidy withdrawn &mdash; farmers have little incentive to buy city compost over cheaper chemical alternatives</li>
+          <li>No quality standardisation: compost from mixed-waste plants is rejected by buyers due to contamination</li>
+          <li>CBG projects stall on feedstock consistency &mdash; wet waste supply is irregular and not guaranteed by ULBs</li>
+          <li>No wet waste spot market or price discovery mechanism; processors cannot plan economically</li>
+        </ul>
+      </div>
+      <div class="hd-wet-col">
+        <div class="hd-wet-col-head opportunity">The Unlocked Potential</div>
+        <ul>
+          <li>1,85,000 TPD &times; 50&ndash;55% = ~93,000 TPD wet waste &mdash; enough to support 400+ large CBG plants or 5,000+ decentralised composting units</li>
+          <li>Properly composted wet waste can replace 3&ndash;4 MT of chemical fertiliser per year in Indian agriculture</li>
+          <li>CBG from wet waste can displace CNG at equivalent economics if feedstock supply is secured</li>
+          <li>Wet waste sorted at source eliminates contamination in dry streams &mdash; unlocking MRF and recycler economics too</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hd-wet-bottom"><strong>Why it matters:</strong> Wet waste is not a downstream problem &mdash; it is the upstream failure that contaminates every other stream. Solving wet waste segregation and offtake is the single highest-leverage intervention in India's solid waste system. It unblocks composting, CBG, MRF quality, and recycling simultaneously. Yet it receives far less policy attention and investment than WtE or EPR.</div>
+  </div>
   <div class="hd-grid" id="hd-grid"></div>
 </section>
 
@@ -1245,48 +1287,6 @@ function renderFocus(){
   document.getElementById("focus-grid").innerHTML=FOCUS_DATA.map(f=>`<div class="focus-card"><div class="focus-number">${f.num}</div><div class="focus-title">${f.title}</div><div class="focus-desc">${f.desc}</div></div>`).join("");
 }
 function renderHiddenDynamics(){
-  document.getElementById("hd-wet").innerHTML=`
-<div class="hd-wet-header">
-  <div>
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--teal);margin-bottom:6px">&#9670; Spotlight — The Largest Unresolved Problem</div>
-    <div class="hd-wet-title">Wet Waste: India's Biggest Fraction Has No Working Solution</div>
-    <div class="hd-wet-sub">50–55% of all municipal solid waste is organic / wet waste — food scraps, kitchen waste, market waste. It is the heaviest, fastest-rotting, and most contaminating fraction. It also has the least functional end-to-end chain.</div>
-  </div>
-  <div class="hd-wet-stat">
-    <div class="hd-wet-stat-val">~93K</div>
-    <div class="hd-wet-stat-label">TPD wet waste<br>with no viable outlet</div>
-  </div>
-</div>
-<div class="hd-wet-cols">
-  <div class="hd-wet-col">
-    <div class="hd-wet-col-head problem">What's Failing</div>
-    <ul>
-      <li>Composting capacity: 1,14,000 TPD — actual throughput: ~35,000–40,000 TPD (30–35% utilisation)</li>
-      <li>Most composting plants are non-operational, poorly maintained, or producing substandard output with heavy metal contamination</li>
-      <li>Source segregation of wet waste — the prerequisite for everything — happens at scale in fewer than 10 cities</li>
-      <li>SATAT CBG target: 5,000 plants by 2024 — only 106 commissioned; biomethanation covers ~4,253 TPD nationally</li>
-    </ul>
-  </div>
-  <div class="hd-wet-col">
-    <div class="hd-wet-col-head gap">Why Offtake is Broken</div>
-    <ul>
-      <li>Compost subsidy withdrawn — farmers have little incentive to buy city compost over cheaper chemical alternatives</li>
-      <li>No quality standardisation: compost from mixed-waste plants is rejected by buyers due to contamination</li>
-      <li>CBG projects stall on feedstock consistency — wet waste supply is irregular and not guaranteed by ULBs</li>
-      <li>No wet waste spot market or price discovery mechanism; processors can't plan economically</li>
-    </ul>
-  </div>
-  <div class="hd-wet-col">
-    <div class="hd-wet-col-head opportunity">The Unlocked Potential</div>
-    <ul>
-      <li>1,85,000 TPD × 50–55% = ~93,000 TPD wet waste — enough to support 400+ large CBG plants or 5,000+ decentralised composting units</li>
-      <li>Properly composted wet waste can replace 3–4 MT of chemical fertiliser/yr in Indian agriculture</li>
-      <li>CBG from wet waste can displace CNG at INR equivalent economics if feedstock supply is secured</li>
-      <li>Wet waste sorted at source eliminates contamination in dry streams — unlocking MRF and recycler economics too</li>
-    </ul>
-  </div>
-</div>
-<div class="hd-wet-bottom"><strong>Why it matters:</strong> Wet waste is not a downstream problem — it is the upstream failure that contaminates every other stream. Solving wet waste segregation and offtake is the single highest-leverage intervention in India's solid waste system. It unblocks composting, CBG, MRF quality, and recycling simultaneously. Yet it receives far less policy attention and investment than WtE or EPR.</div>`;
   document.getElementById("hd-grid").innerHTML=HIDDEN_DYNAMICS.map(d=>`
 <div class="hd-card ${d.severity}">
   <span class="hd-severity hd-sev-${d.severity}">${d.severity}</span>
