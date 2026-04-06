@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>India Urban Waste System — Waste Canvas</title>
+<title>India Urban Solid Waste System — Solid Waste Canvas</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -173,6 +173,22 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 .hd-why::before{content:'↳ Why it matters: ';color:var(--amber);font-style:normal;font-weight:700}
 .hd-severity{position:absolute;top:14px;right:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:3px}
 .hd-sev-critical{background:#FF525220;color:var(--coral)}.hd-sev-high{background:#FFB30020;color:var(--amber)}
+.hd-wet-card{background:linear-gradient(135deg,#0d1a1a,#0d1f14);border:1px solid #00BFA540;border-left:4px solid var(--teal);border-radius:10px;padding:22px 24px;margin-bottom:14px;position:relative;overflow:hidden}
+.hd-wet-card::before{content:'';position:absolute;top:0;right:0;width:200px;height:100%;background:radial-gradient(ellipse at right,#00BFA510 0%,transparent 70%);pointer-events:none}
+.hd-wet-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px}
+.hd-wet-title{font-size:16px;font-weight:800;color:var(--teal);line-height:1.3;margin-bottom:4px}
+.hd-wet-sub{font-size:12px;color:var(--muted)}
+.hd-wet-stat{text-align:right;flex-shrink:0}
+.hd-wet-stat-val{font-size:28px;font-weight:800;color:var(--teal);line-height:1}
+.hd-wet-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.hd-wet-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px}
+.hd-wet-col{background:#ffffff08;border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.hd-wet-col-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.hd-wet-col-head.problem{color:var(--coral)}.hd-wet-col-head.gap{color:var(--amber)}.hd-wet-col-head.opportunity{color:var(--green)}
+.hd-wet-col li{font-size:11px;color:var(--muted);line-height:1.6;padding:2px 0;list-style:none;padding-left:14px;position:relative}
+.hd-wet-col li::before{content:'·';position:absolute;left:4px;color:inherit}
+.hd-wet-bottom{font-size:11px;color:var(--muted);line-height:1.6;padding-top:12px;border-top:1px solid var(--border);font-style:italic}
+.hd-wet-bottom strong{color:var(--amber);font-style:normal}
 .subtab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 .subtab-btn{background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
 .subtab-btn:hover{border-color:var(--teal);color:var(--teal)}
@@ -183,7 +199,7 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 
 <nav id="topnav">
   <a href="../index.html" style="color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;padding:12px 10px;text-decoration:none;border-bottom:2px solid transparent;transition:color .2s" onmouseover="this.style.color='var(--teal)'" onmouseout="this.style.color='var(--muted)'">← Home</a>
-  <span class="brand">⟳ Waste Canvas</span>
+  <span class="brand">⟳ Solid Waste Canvas</span>
   <a href="#overview">Overview</a>
   <a href="#map-charts">Map & Charts</a>
   <a href="#system-flows">System Flows</a>
@@ -211,9 +227,10 @@ details[open] .src-summary::after{transform:rotate(180deg)}
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
     <div>
       <div class="live-badge"><span class="live-dot"></span> Live Intelligence Dashboard</div>
-      <h1 class="main-title">India Urban Waste System — <span>Waste Canvas</span></h1>
+      <h1 class="main-title">India Urban Solid Waste System — <span>Solid Waste Canvas</span></h1>
       <p class="subtitle">National Ecosystem Intelligence · Systems Mapping · Unit Economics · Pan-India Actor Landscape</p>
-      <p style="font-size:11px;color:var(--muted);margin-top:4px">Open data · CC BY-SA 4.0 · Leaflet.js · D3.js · Chart.js · OpenStreetMap</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:14px;max-width:680px;line-height:1.7">India generates <strong style="color:var(--text)">1,85,000 tonnes of municipal solid waste every day</strong> across 4,800 urban local bodies — yet only 61% reaches any processing endpoint and less than a third is meaningfully recovered. This dashboard maps the full system: waste flows, infrastructure gaps, unit economics, the informal recovery economy, and the actors trying to close the loop. Data is drawn from CPCB, MoHUA/SBM-U 2.0, Swachh Survekshan 2024-25, DRAP, and open research — updated to FY 2023-24.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px">Open data · CC BY-SA 4.0 · Leaflet.js · D3.js · Chart.js · OpenStreetMap</p>
     </div>
     <div style="text-align:right">
       <div class="clock" id="clock">--:--:-- --</div>
@@ -347,7 +364,8 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 <!-- Section 6: Hidden Dynamics -->
 <section id="hidden-dynamics" class="section fade-in">
   <div class="section-title">Hidden Dynamics — What the Numbers Don't Show</div>
-  <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Seven structural realities that shape India's urban waste system but rarely surface in official reporting, rankings, or investment decks.</p>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Eight structural realities that shape India's urban solid waste system but rarely surface in official reporting, rankings, or investment decks.</p>
+  <div class="hd-wet-card" id="hd-wet"></div>
   <div class="hd-grid" id="hd-grid"></div>
 </section>
 
@@ -362,11 +380,11 @@ details[open] .src-summary::after{transform:rotate(180deg)}
   <div class="cc-badge">
     <div>
       <div class="cc-title">Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</div>
-      <div class="cc-sub">Urban Tracker — Waste Canvas · India Urban Waste System Intelligence Dashboard · 2026</div>
+      <div class="cc-sub">Urban Tracker — Solid Waste Canvas · India Urban Solid Waste System Intelligence Dashboard · 2026</div>
     </div>
   </div>
   <p class="cc-legal"><strong>You are free to:</strong> Share — copy and redistribute this material in any medium or format. Adapt — remix, transform, and build upon the material for any purpose, even commercially.<br><strong>Under the terms:</strong> Attribution — credit Urban Tracker / Waste Canvas, link to license, indicate changes. ShareAlike — distribute adaptations under the same CC BY-SA 4.0 license.</p>
-  <p class="cc-legal">© 2026 Urban Tracker — Waste Canvas. Data sourced from CPCB, MoHUA/SBM-U 2.0, GFC, PIB, World Bank, NITI Aayog, CSE, NIUA, UNDP India. This is an open research tool, not an official government publication.</p>
+  <p class="cc-legal">© 2026 Urban Tracker — Solid Waste Canvas. Data sourced from CPCB, MoHUA/SBM-U 2.0, GFC, PIB, World Bank, NITI Aayog, CSE, NIUA, UNDP India. This is an open research tool, not an official government publication.</p>
   <p class="cc-data">Built with open-source tools: Leaflet.js (BSD 2-Clause) · D3.js (ISC) · D3-Sankey (BSD) · Chart.js (MIT) · OpenStreetMap (ODbL)</p>
   <p class="cc-data" style="margin-top:4px"><a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color:var(--blue)">https://creativecommons.org/licenses/by-sa/4.0/</a></p>
 </footer>
@@ -1227,6 +1245,48 @@ function renderFocus(){
   document.getElementById("focus-grid").innerHTML=FOCUS_DATA.map(f=>`<div class="focus-card"><div class="focus-number">${f.num}</div><div class="focus-title">${f.title}</div><div class="focus-desc">${f.desc}</div></div>`).join("");
 }
 function renderHiddenDynamics(){
+  document.getElementById("hd-wet").innerHTML=`
+<div class="hd-wet-header">
+  <div>
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--teal);margin-bottom:6px">&#9670; Spotlight — The Largest Unresolved Problem</div>
+    <div class="hd-wet-title">Wet Waste: India's Biggest Fraction Has No Working Solution</div>
+    <div class="hd-wet-sub">50–55% of all municipal solid waste is organic / wet waste — food scraps, kitchen waste, market waste. It is the heaviest, fastest-rotting, and most contaminating fraction. It also has the least functional end-to-end chain.</div>
+  </div>
+  <div class="hd-wet-stat">
+    <div class="hd-wet-stat-val">~93K</div>
+    <div class="hd-wet-stat-label">TPD wet waste<br>with no viable outlet</div>
+  </div>
+</div>
+<div class="hd-wet-cols">
+  <div class="hd-wet-col">
+    <div class="hd-wet-col-head problem">What's Failing</div>
+    <ul>
+      <li>Composting capacity: 1,14,000 TPD — actual throughput: ~35,000–40,000 TPD (30–35% utilisation)</li>
+      <li>Most composting plants are non-operational, poorly maintained, or producing substandard output with heavy metal contamination</li>
+      <li>Source segregation of wet waste — the prerequisite for everything — happens at scale in fewer than 10 cities</li>
+      <li>SATAT CBG target: 5,000 plants by 2024 — only 106 commissioned; biomethanation covers ~4,253 TPD nationally</li>
+    </ul>
+  </div>
+  <div class="hd-wet-col">
+    <div class="hd-wet-col-head gap">Why Offtake is Broken</div>
+    <ul>
+      <li>Compost subsidy withdrawn — farmers have little incentive to buy city compost over cheaper chemical alternatives</li>
+      <li>No quality standardisation: compost from mixed-waste plants is rejected by buyers due to contamination</li>
+      <li>CBG projects stall on feedstock consistency — wet waste supply is irregular and not guaranteed by ULBs</li>
+      <li>No wet waste spot market or price discovery mechanism; processors can't plan economically</li>
+    </ul>
+  </div>
+  <div class="hd-wet-col">
+    <div class="hd-wet-col-head opportunity">The Unlocked Potential</div>
+    <ul>
+      <li>1,85,000 TPD × 50–55% = ~93,000 TPD wet waste — enough to support 400+ large CBG plants or 5,000+ decentralised composting units</li>
+      <li>Properly composted wet waste can replace 3–4 MT of chemical fertiliser/yr in Indian agriculture</li>
+      <li>CBG from wet waste can displace CNG at INR equivalent economics if feedstock supply is secured</li>
+      <li>Wet waste sorted at source eliminates contamination in dry streams — unlocking MRF and recycler economics too</li>
+    </ul>
+  </div>
+</div>
+<div class="hd-wet-bottom"><strong>Why it matters:</strong> Wet waste is not a downstream problem — it is the upstream failure that contaminates every other stream. Solving wet waste segregation and offtake is the single highest-leverage intervention in India's solid waste system. It unblocks composting, CBG, MRF quality, and recycling simultaneously. Yet it receives far less policy attention and investment than WtE or EPR.</div>`;
   document.getElementById("hd-grid").innerHTML=HIDDEN_DYNAMICS.map(d=>`
 <div class="hd-card ${d.severity}">
   <span class="hd-severity hd-sev-${d.severity}">${d.severity}</span>
