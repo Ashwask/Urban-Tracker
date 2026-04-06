@@ -157,6 +157,22 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 .data-table tr:hover td{background:var(--bg3)}
 .fade-in{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
 .fade-in.visible{opacity:1;transform:none}
+#hidden-dynamics{background:linear-gradient(135deg,#0D1117 0%,#1a120d 50%,#0D1117 100%)}
+.hd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.hd-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 16px 14px;position:relative;overflow:hidden;transition:transform .2s}
+.hd-card:hover{transform:translateY(-2px)}
+.hd-card.critical{border-top:3px solid var(--coral)}.hd-card.high{border-top:3px solid var(--amber)}
+.hd-icon{font-size:22px;margin-bottom:8px}
+.hd-title{font-size:13px;font-weight:700;margin-bottom:10px;line-height:1.35;padding-right:56px}
+.hd-block{margin-bottom:8px}
+.hd-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 7px;border-radius:3px;margin-bottom:4px;display:inline-block}
+.hd-official .hd-label{background:#69F0AE15;color:#69F0AE;border:1px solid #69F0AE30}
+.hd-reality .hd-label{background:#FF525215;color:var(--coral);border:1px solid #FF525230}
+.hd-text{font-size:11px;color:var(--muted);line-height:1.6}
+.hd-why{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);line-height:1.5;font-style:italic}
+.hd-why::before{content:'↳ Why it matters: ';color:var(--amber);font-style:normal;font-weight:700}
+.hd-severity{position:absolute;top:14px;right:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:3px}
+.hd-sev-critical{background:#FF525220;color:var(--coral)}.hd-sev-high{background:#FFB30020;color:var(--amber)}
 .subtab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 .subtab-btn{background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
 .subtab-btn:hover{border-color:var(--teal);color:var(--teal)}
@@ -173,6 +189,7 @@ details[open] .src-summary::after{transform:rotate(180deg)}
   <a href="#system-flows">System Flows</a>
   <a href="#economics-gaps">Economics & Gaps</a>
   <a href="#ecosystem">Ecosystem</a>
+  <a href="#hidden-dynamics">Hidden Dynamics</a>
   <a href="#sources">Sources</a>
 </nav>
 
@@ -327,7 +344,14 @@ details[open] .src-summary::after{transform:rotate(180deg)}
   </div>
 </section>
 
-<!-- Section 6: Sources (kept as-is) -->
+<!-- Section 6: Hidden Dynamics -->
+<section id="hidden-dynamics" class="section fade-in">
+  <div class="section-title">Hidden Dynamics — What the Numbers Don't Show</div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Seven structural realities that shape India's urban waste system but rarely surface in official reporting, rankings, or investment decks.</p>
+  <div class="hd-grid" id="hd-grid"></div>
+</section>
+
+<!-- Section 7: Sources -->
 <section id="sources" class="section fade-in">
   <div class="section-title">Data Sources & Citations</div>
   <p style="font-size:12px;color:var(--muted);margin-bottom:14px">All data derived from publicly available government reports, international development publications, and open-access research. Primary: CPCB FY 2023-24 · SBM-U 2.0 · SS 2024-25 · DRAP Nov 2025. Licensed under <strong style="color:var(--teal)">CC BY-SA 4.0</strong>. Map: OpenStreetMap (ODbL).</p>
@@ -366,6 +390,43 @@ const ACTIONS_DATA=[{icon:"🔗",title:"Bind Segregation to GFC/SBM Ratings",des
 const FOCUS_DATA=[{num:"01",title:"INTEGRATION",desc:"Connect the fragmented mid-chain — MRF → scrap dealer → aggregator → recycler — with traceability, pricing transparency, and working capital. Every 1% improvement in mid-chain connectivity recovers ~₹500–900 Cr/yr in material value. No new infrastructure needed."},{num:"02",title:"WORKING CAPITAL",desc:"Unlock inventory finance for scrap dealers and aggregators via EPR-linked purchase orders, digital transaction records, and NBFC products. National gap: ₹4,000–6,000 Cr. Closing even 20% would materially increase recovery rates without building new infrastructure."},{num:"03",title:"INCLUSION",desc:"Formalise 15–20 lakh waste pickers into city data systems, social protection, and EPR payment flows. SWaCH (Pune) and Hasiru Dala (Bengaluru) are proven at city scale and ready for national replication with MoHUA mandate and funder support."}];
 const EXISTS_DATA=["ULB-led collection backbone — concessionaires, fleets, ward teams in most urban areas","Large informal recovery economy — waste pickers, kabadiwalas, scrap networks at national scale","Growing MRF / sorting infrastructure — 2,900 MRFs nationally, though variable quality","EPR framework creating commercial flows for plastic waste collection and recycling","CBG/composting/biomethanation ecosystem — GPS Renewables, IGRPL, Mailhem and others","SBM-U 2.0 and GFC ratings — policy momentum, measurable city-level improvement","Mission-aligned capital — philanthropy, CSR, VC and blended finance entering the sector","Model city examples — Indore (7-Star), Pune, Mysuru demonstrating what is possible"];
 const MISSING_DATA=["Consistent source segregation — only 39,648 of 60,478 high-collection wards also segregate","End-to-end traceability — no data trail linking MRF dispatch to recycler throughput","Reliable offtake for low-value streams — MLP, flex plastics, contaminated fractions lack buyers","Working capital for mid-chain — scrap dealers/aggregators locked out of formal finance","Formal inclusion of 15–20L informal workers in city systems, data, and EPR flows","Data interoperability — ULBs, EPR platforms and recyclers operate in separate data silos","Scientific landfill as last resort — default disposal continues despite processing alternatives","Blended finance at scale for legacy remediation — 38% of dumpsites remain unmediated"];
+const HIDDEN_DYNAMICS=[
+  {icon:"👻",title:"The Invisible Workforce Behind the 97% Collection Stat",
+   official:"97% ward-level door-to-door collection coverage across Class I & II cities (SBM-U 2.0 / CPCB FY 2023-24)",
+   reality:"1.5–2 million informal waste pickers drive 15–20% of actual collection and recover most dry recyclables — entirely uncounted in official data, without labour protections, and outside every formal budget line. The 97% figure is partly built on their uncompensated work.",
+   why:"If informal pickers stopped for a week, most city collection systems would collapse. Their invisibility in data means no policy scales, funds, or protects their contribution.",
+   severity:"critical"},
+  {icon:"📄",title:"EPR Certificates: Compliance Theater at Scale",
+   official:"20.7 MT plastic recycled cumulatively since Apr 2022; 60,128 PIBOs registered on CPCB portal (Parliament, Mar 2026)",
+   reality:"CPCB's EPR portal allows certificate trading — brands buy recycling credits without ensuring actual material recovery. CSE (Oct 2024) found 70,000+ fraudulent certificates; claimed co-processing of 335 MT/yr vs. verified 11 MT/yr. Reported volumes exceed India's verifiable formal recycling capacity.",
+   why:"If certificates aren't backed by actual tonnes recovered, EPR functions as a financial compliance mechanism that subsidises inaction rather than driving circularity.",
+   severity:"critical"},
+  {icon:"📊",title:"'61% Processed' — But Processed How?",
+   official:"61% of municipal solid waste 'processed' (CPCB FY 2023-24 as cited in SWM Rules 2026)",
+   reality:"The 61% includes waste sent to 'engineered landfills' and 'controlled tipping facilities' — renamed, not solved. Actual material recovery (composting + recycling + WtE energy) is ~30–35%. The other 26–30% goes into better-lined holes in the ground that pass MoHUA audits.",
+   why:"'100% processing' targets can be gamed by relabelling a dumpsite. Without separating material recovery rate from disposal rate, the system's circularity is structurally overstated in every headline metric.",
+   severity:"critical"},
+  {icon:"🏆",title:"Swachh Survekshan Ranks Scorecards, Not Outcomes",
+   official:"Rankings drive national SWM accountability; Indore #1 eight consecutive years; scores improve annually; 14.66M citizen responses (SS 2024-25)",
+   reality:"SS methodology rewards documentation quality, on-site audit presentations, and short-window survey compliance. Cities with high SS ranks show inconsistent actual processing rates (Chennai: 29%, Kolkata: 20%). Survey windows are known in advance. Neighbouring rural areas of top-ranked cities often have near-zero coverage.",
+   why:"When the accountability mechanism rewards the scorecard over the outcome, cities invest in SS preparation rather than waste diversion infrastructure. Rankings and recovery rates are weakly correlated.",
+   severity:"high"},
+  {icon:"🔥",title:"WtE Plants Built for Waste That Doesn't Yet Exist",
+   official:"14 operational WtE plants, 17,600 TPD capacity, 202 MW generation; 6,150 TPD more under construction (Lok Sabha, Dec 2024)",
+   reality:"Most plants run at 40–60% of design capacity. India's mixed MSW averages ~60% moisture and ~1,200 kcal/kg calorific value — vs. 2,500+ kcal/kg that WtE requires to be economical. Without upstream segregation infrastructure, WtE is structurally unviable at current waste composition.",
+   why:"Investing in downstream incineration without upstream dry-waste segregation is building the last step before the first. The technology is not wrong; the sequencing is.",
+   severity:"high"},
+  {icon:"💸",title:"No ULB Financially Sustains Its Own Waste System",
+   official:"Collection coverage near-universal in Class I cities; SBM-U 2.0 investing ₹1.4L Cr nationally; 15th Finance Commission grants active",
+   reality:"ULBs recover <5% of SWM costs through user charges. Collection costs ₹1,000–2,000/tonne; user fee revenue averages <₹50/tonne. The entire system runs on central and state grants. When transfers are delayed or cut, service stops. No major Indian city has a sustainable SWM financing model.",
+   why:"Every coverage statistic is contingent on political will and grant continuity — not fiscal sustainability. The system is one budget cycle away from breakdown in most cities.",
+   severity:"critical"},
+  {icon:"🏚️",title:"Legacy Dumpsite Remediation: The Math Doesn't Add Up",
+   official:"DRAP launched Nov 2025; 2,479 legacy sites identified; 62% of legacy volume remediated; 459 sites cleared in 2025",
+   reality:"At current pace (~15–20 full remediations/year across India), clearing all remaining sites takes 100–150 years. New waste is landfilled at legacy rates faster than remediation clears old sites. DRAP is real — but the delta between programme scale and problem scale is not publicly acknowledged.",
+   why:"Without an honest public reckoning of the remediation timeline, policy expectations and funding allocations will remain structurally misaligned with the actual liability.",
+   severity:"high"}
+];
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -1165,6 +1226,17 @@ function renderFunders(){
 function renderFocus(){
   document.getElementById("focus-grid").innerHTML=FOCUS_DATA.map(f=>`<div class="focus-card"><div class="focus-number">${f.num}</div><div class="focus-title">${f.title}</div><div class="focus-desc">${f.desc}</div></div>`).join("");
 }
+function renderHiddenDynamics(){
+  document.getElementById("hd-grid").innerHTML=HIDDEN_DYNAMICS.map(d=>`
+<div class="hd-card ${d.severity}">
+  <span class="hd-severity hd-sev-${d.severity}">${d.severity}</span>
+  <div class="hd-icon">${d.icon}</div>
+  <div class="hd-title">${d.title}</div>
+  <div class="hd-block hd-official"><span class="hd-label">Official</span><p class="hd-text">${d.official}</p></div>
+  <div class="hd-block hd-reality"><span class="hd-label">Reality</span><p class="hd-text">${d.reality}</p></div>
+  <p class="hd-why">${d.why}</p>
+</div>`).join("");
+}
 function renderSources(){
   const cats=[...new Set(SOURCES_DATA.map(s=>s.cat))];
   const colors={"Govt & Official":"var(--teal)","International":"var(--blue)","NGO & Research":"var(--amber)","Investment & Finance":"var(--green)","Open Data":"var(--muted)"};
@@ -1193,7 +1265,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   switchSubtab._rendered = {'system-flows:sankey': true, 'system-flows:flow': true};
   renderUnitEco();renderGaps();renderCompare();
   initPartnerFilters();renderFunders();renderActions();renderFocus();
-  renderSources();
+  renderHiddenDynamics();renderSources();
   initScrollObs();initNavHL();
   window.addEventListener("resize",()=>{
     const ap=document.querySelector('#system-flows .subtab-panel.active');
